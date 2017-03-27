@@ -1,15 +1,17 @@
 #include <renderable.hpp>
 #include <iostream>
 #include <fstream>
+#include <cmath>
 
-
-void Renderable::initialize()
+float scale=0;
+void Renderable::initialize(GLuint program)
 {
     vao=0;vbo=0;
     glGenVertexArrays (1, &vao);
     glBindVertexArray (vao);
     glGenBuffers (1, &vbo);
     glBindBuffer (GL_ARRAY_BUFFER, vbo);
+    this->program = program;
 }
 
   
@@ -34,6 +36,9 @@ void Triangle::setPoints()
  
 void  Triangle::modifyPoints()
 {
+    scale += 0.01f;
+    GLuint gScaleLocation = glGetUniformLocation(program, "gScale");
+    glUniform1f(gScaleLocation, sin(scale));
     if (points[0].cx > 0.99) points[0].cx =0;
     if (points[0].cy > 0.99) points[0].cy =0;
     if (points[0].cz > 0.99) points[0].cz =0;

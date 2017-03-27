@@ -11,9 +11,9 @@ class Renderable
 {
     protected:
     std::vector<Point> points;
-    GLuint vao,vbo;
+    GLuint vao,vbo,program;
     public:
-    void initialize();
+    void initialize(GLuint program);
     virtual void setPoints()=0;
     void render();
     virtual void modifyPoints();

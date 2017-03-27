@@ -39,7 +39,7 @@ ApolloHandler::ApolloHandler()
     vShader.compileShader();
     fShader.compileShader();
     program=ShaderHandler::useProgram();
-    renderable->initialize();
+    renderable->initialize(program);
     renderable->setPoints();
        
     GLint vpos_location = glGetAttribLocation(program, "vPosition");
