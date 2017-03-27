@@ -11,7 +11,7 @@ class ApolloHandler
     public:
     ApolloHandler();
     GLFWwindow *window;
-    Renderable renderable;
+    Renderable *renderable;
     void run();
     void singleLoop();
 };

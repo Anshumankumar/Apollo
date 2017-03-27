@@ -11,6 +11,8 @@ static void error_callback(int error, const char* description)
 
 ApolloHandler::ApolloHandler()
 {
+    //renderable = new FileRender("../models/test.raw");
+    renderable = new Triangle();
     glfwSetErrorCallback(error_callback);
     if (!glfwInit())
         exit(2);
@@ -37,7 +39,8 @@ ApolloHandler::ApolloHandler()
     vShader.compileShader();
     fShader.compileShader();
     program=ShaderHandler::useProgram();
-    renderable.setPoints();
+    renderable->initialize();
+    renderable->setPoints();
        
     GLint vpos_location = glGetAttribLocation(program, "vPosition");
     GLint vcol_location = glGetAttribLocation(program, "vColor");
@@ -74,10 +77,7 @@ void ApolloHandler::singleLoop()
     glClear(GL_COLOR_BUFFER_BIT |GL_DEPTH_BUFFER_BIT);
 
     
-    renderable.initVboVao();
-
-
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+    renderable->render();
     glfwSwapBuffers(window);
     glfwPollEvents();
 

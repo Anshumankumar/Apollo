@@ -12,11 +12,13 @@
 class ShaderHandler
 {
     GLuint shader;
+    GLenum shaderType;
     char *buffer;
     public:
     static std::vector<GLuint> shaderList;
     ShaderHandler(std::string filename, GLenum shaderType)
     {
+        this->shaderType = shaderType;
         std::ifstream stream(filename,std::ifstream::in);
         if (stream.is_open())
         {
@@ -44,7 +46,10 @@ class ShaderHandler
         glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
         if (status == GL_FALSE)
         {
-            std::cerr << "HULA";
+
+            GLchar infoLog[2048];
+            glGetShaderInfoLog(shader, sizeof(infoLog), NULL, infoLog);
+            std::cerr << shaderType << " " << infoLog << std::endl; 
             exit(2);
         }
         shaderList.push_back(shader);
