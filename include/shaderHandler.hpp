@@ -40,7 +40,7 @@ class ShaderHandler
     GLuint compileShader()
     {
 
-        glShaderSource(shader, 1, &buffer, NULL);
+        glShaderSource(shader, 1, (const char **)&buffer, NULL);
         glCompileShader(shader);
         GLint status;
         glGetShaderiv(shader, GL_COMPILE_STATUS, &status);

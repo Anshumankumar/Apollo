@@ -15,7 +15,7 @@ class Renderable
     GLuint vao,vbo,program;
     float scale =0;
     public:
-    float tmat[4][4] = {0};
+    float tmat[4][4] = {{0}};
     void initialize(GLuint program);
     virtual void setPoints()=0;
     void render();
