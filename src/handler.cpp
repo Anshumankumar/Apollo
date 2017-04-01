@@ -13,8 +13,9 @@ ApolloHandler::ApolloHandler()
 {
     //renderable = new FileRender("../models/test.raw");
     //renderable = new Triangle();
-    Generator * generator = new PartEllipsoid(0.7,0.7,0.7,1.0);
-    renderable = new GeneratorRender(generator);
+    Generator * generator = new Circle(0.7);
+   renderable = new GeneratorRender(generator);
+//    renderable = new FileRender("../models/test_star.raw");
     glfwSetErrorCallback(error_callback);
     if (!glfwInit())
         exit(2);
@@ -34,7 +35,7 @@ ApolloHandler::ApolloHandler()
         std::cerr << "glewInit failed: " << glewGetErrorString(err) << std::endl;
         exit(1);
     }
-
+    glEnable(GL_POINTS);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

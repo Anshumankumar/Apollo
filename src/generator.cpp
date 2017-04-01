@@ -58,3 +58,24 @@ Point PartEllipsoid::getPointEllipse( float a, float b, float c, float theta, fl
     point.w = 1;
     return point;
 }
+
+Circle::Circle(float radius)
+{
+    int k = 0;
+    float theta;
+        for (int i = 0; i < 180; i++)
+        {
+	    theta = i*2*M_PI/180;
+            //points[k++]= getPointCircle(radius,theta);
+	    Point point;
+   	    point.cx =  fabs(sin(0.5 *theta));
+    	    point.cy =  fabs(sin(0.5 *theta));
+    	    point.cz =  0.5;
+            point.a =   1.0;
+            point.x = radius*cos(theta);
+            point.y = radius*sin(theta);
+            point.z = 0;
+            point.w = 1;
+	    points[k++]= point;
+        }
+}

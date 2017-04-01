@@ -28,8 +28,8 @@ void Renderable::render()
     glUniformMatrix4fv(matLocation, 1, GL_TRUE, &tmat[0][0]);
     glBufferData (GL_ARRAY_BUFFER,points.size()*sizeof(Point),
             &points[0], GL_STATIC_DRAW);
-    glDrawArrays(GL_POINTS, 0, points.size());
- //   glDrawArrays(GL_LINES, 0, points.size());
+    glDrawArrays(GL_TRIANGLES, 0, points.size());
+//    glDrawArrays(GL_LINES, 0, points.size());
 //    glDrawArrays(GL_TRIANGLES, 0, points.size());
 
 }

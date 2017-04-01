@@ -25,4 +25,10 @@ class PartEllipsoid:public Generator
     PartEllipsoid(float a,float b, float c, float factor);
 }; 
 
+class Circle:public Generator
+{
+    public:
+
+    Circle(float radius);
+};
 #endif // GENERATOR_HPP
