@@ -6,13 +6,16 @@
 #include <string>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include <generator.hpp>
 
 class Renderable
 {
     protected:
     std::vector<Point> points;
     GLuint vao,vbo,program;
+    float scale =0;
     public:
+    float tmat[4][4] = {0};
     void initialize(GLuint program);
     virtual void setPoints()=0;
     void render();
@@ -26,6 +29,17 @@ class Triangle:public Renderable
     void setPoints();
     void modifyPoints();
 };
+
+
+class GeneratorRender:public Renderable
+{
+    Generator *generator;
+    public:
+    GeneratorRender(Generator * generator);
+    void modifyPoints();
+    void setPoints();
+};
+
 
 class FileRender:public Renderable
 {

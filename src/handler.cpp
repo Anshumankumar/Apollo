@@ -12,11 +12,13 @@ static void error_callback(int error, const char* description)
 ApolloHandler::ApolloHandler()
 {
     //renderable = new FileRender("../models/test.raw");
-    renderable = new Triangle();
+    //renderable = new Triangle();
+    Generator * generator = new PartEllipsoid(0.7,0.7,0.7,1.0);
+    renderable = new GeneratorRender(generator);
     glfwSetErrorCallback(error_callback);
     if (!glfwInit())
         exit(2);
-    window = glfwCreateWindow(640, 480, "Apollo", NULL, NULL);
+    window = glfwCreateWindow(640, 640, "Apollo", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
@@ -33,6 +35,9 @@ ApolloHandler::ApolloHandler()
         exit(1);
     }
 
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     ShaderHandler vShader("../shaders/vshader.glsl",GL_VERTEX_SHADER);
     ShaderHandler fShader("../shaders/fshader.glsl",GL_FRAGMENT_SHADER); 

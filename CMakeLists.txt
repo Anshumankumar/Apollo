@@ -8,5 +8,5 @@ pkg_search_module(GLFW REQUIRED glfw3)
 
 include_directories(${GLFW_INCLUDE_DIRS})
 include_directories(include)
-add_executable(main src/main.cpp src/handler.cpp src/renderable.cpp)
+add_executable(main src/main.cpp src/handler.cpp src/renderable.cpp src/generator.cpp)
 target_link_libraries(main ${GLFW_LIBRARIES} ${GLEW_LIBRARIES}  ${OPENGL_gl_LIBRARY})

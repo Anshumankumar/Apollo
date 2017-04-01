@@ -3,7 +3,6 @@
 #include <fstream>
 #include <cmath>
 
-float scale=0;
 void Renderable::initialize(GLuint program)
 {
     vao=0;vbo=0;
@@ -12,15 +11,26 @@ void Renderable::initialize(GLuint program)
     glGenBuffers (1, &vbo);
     glBindBuffer (GL_ARRAY_BUFFER, vbo);
     this->program = program;
+    tmat[0][0]=1;
+    tmat[1][1]=1;
+    tmat[2][2]=1;
+    tmat[3][3]=1;
 }
 
   
 void Renderable::render()
 {
+    GLuint gScaleLocation = glGetUniformLocation(program, "gScale");
+    glUniform1f(gScaleLocation, sin(scale));
+    GLuint matLocation = glGetUniformLocation(program, "transMat");
+
     modifyPoints();
+    glUniformMatrix4fv(matLocation, 1, GL_TRUE, &tmat[0][0]);
     glBufferData (GL_ARRAY_BUFFER,points.size()*sizeof(Point),
             &points[0], GL_STATIC_DRAW);
-    glDrawArrays(GL_TRIANGLES, 0, points.size());
+    glDrawArrays(GL_POINTS, 0, points.size());
+ //   glDrawArrays(GL_LINES, 0, points.size());
+//    glDrawArrays(GL_TRIANGLES, 0, points.size());
 
 }
 
@@ -36,9 +46,13 @@ void Triangle::setPoints()
  
 void  Triangle::modifyPoints()
 {
+    
     scale += 0.01f;
-    GLuint gScaleLocation = glGetUniformLocation(program, "gScale");
-    glUniform1f(gScaleLocation, sin(scale));
+    tmat[0][0]=cos(scale);
+    tmat[2][0]=-sin(scale);
+    tmat[0][2]=sin(scale);
+    tmat[2][2]=cos(scale); 
+
     if (points[0].cx > 0.99) points[0].cx =0;
     if (points[0].cy > 0.99) points[0].cy =0;
     if (points[0].cz > 0.99) points[0].cz =0;
@@ -59,6 +73,25 @@ void  Triangle::modifyPoints()
     points[2].cx= points[2].cx +0.0015;
     points[2].cy= points[2].cy +0.0012;
     points[2].cz= points[2].cz +0.00045;
+}
+
+GeneratorRender::GeneratorRender(Generator * generator)
+{
+    this->generator = generator;
+}
+
+void GeneratorRender::setPoints()
+{
+    points = generator->getPoints();
+}
+
+void GeneratorRender::modifyPoints()
+{
+    scale += 0.01f;
+    tmat[0][0]=cos(scale);
+    tmat[2][0]=-sin(scale);
+    tmat[0][2]=sin(scale);
+    tmat[2][2]=cos(scale); 
 }
 
 FileRender::FileRender(std::string filename)
