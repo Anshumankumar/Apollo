@@ -63,19 +63,47 @@ Circle::Circle(float radius)
 {
     int k = 0;
     float theta;
+    float theta1;
         for (int i = 0; i < 180; i++)
         {
 	    theta = i*2*M_PI/180;
+	    theta1 = (i+1)*2*M_PI/180;
             //points[k++]= getPointCircle(radius,theta);
-	    Point point;
-   	    point.cx =  fabs(sin(0.5 *theta));
-    	    point.cy =  fabs(sin(0.5 *theta));
-    	    point.cz =  0.5;
-            point.a =   1.0;
-            point.x = radius*cos(theta);
-            point.y = radius*sin(theta);
-            point.z = 0;
-            point.w = 1;
-	    points[k++]= point;
+	    Point point1;
+	    Point point2;
+            Point point3;
+	    //points[k++]= getPointCircle(radius,theta);
+	    point1.cx =  fabs(sin(0.5 *theta));
+            point1.cy =  fabs(sin(0.5 *theta));
+            point1.cz =  0.5;
+            point1.a =   1.0;
+            point1.x = radius*cos(theta);
+            point1.y = radius*sin(theta);
+            point1.z = 0;
+            point1.w = 1;
+            points.push_back(point1);
+
+	    point2.cx =  fabs(sin(0.5 *theta));
+            point2.cy =  fabs(sin(0.5 *theta));
+            point2.cz =  0.5;
+            point2.a =   1.0;
+            point2.x = radius*cos(theta1);
+            point2.y = radius*sin(theta1);
+            point2.z = 0;
+            point2.w = 1;
+            points.push_back(point2);
+
+            //points[k++]= getPointCircle(radius,theta1);
+    	    point3.cx =  fabs(sin(0.5 *theta));
+    	    point3.cy =  fabs(sin(0.5 *theta));
+            point3.cz =  0.5;
+    	    point3.a =   1.0;
+    	    point3.x = 0.0;
+    	    point3.y = 0.0;
+    	    point3.z = 0;
+    	    point3.w = 1;
+	    points.push_back(point3);
         }
 }
+
+

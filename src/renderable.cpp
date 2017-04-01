@@ -87,11 +87,11 @@ void GeneratorRender::setPoints()
 
 void GeneratorRender::modifyPoints()
 {
-    scale += 0.01f;
-    tmat[0][0]=cos(scale);
-    tmat[2][0]=-sin(scale);
-    tmat[0][2]=sin(scale);
-    tmat[2][2]=cos(scale); 
+    //scale += 0.01f;
+    //tmat[0][0]=cos(scale);
+    //tmat[2][0]=-sin(scale);
+    //tmat[0][2]=sin(scale);
+    //tmat[2][2]=cos(scale); 
 }
 
 FileRender::FileRender(std::string filename)
