@@ -39,20 +39,27 @@ void  Renderable::modifyPoints(){}
 void Triangle::setPoints()
 {
     points.resize(0);
-    points.push_back({0.0,0.7,0.1,1.0,1.0,1.0,1.0,1.0});
-    points.push_back({0.7,-0.7,0.1,1.0,0.5,0.5,0.0,1.0});
-    points.push_back({-0.7,-0.7,0.1,1.0,0.0,1.0,1.0,1.0});
+    points.push_back({0.0,0.3,0.1,1.0,1.0,1.0,1.0,1.0});
+    points.push_back({0.2598,-0.15,0.1,1.0,0.5,0.5,0.0,1.0});
+    points.push_back({-0.2598,-0.15,0.1,1.0,0.0,1.0,1.0,1.0});
 }
  
 void  Triangle::modifyPoints()
 {
     
     scale += 0.01f;
+ /*   tmat[0][0]=cos(scale);
+    tmat[0][1]=-sin(scale);
+    tmat[1][0]=sin(scale);
+    tmat[1][1]=cos(scale); */
+    tmat[0][3] = 0.5*cos(scale);   
+    tmat[1][3] = 0.5*sin(scale);   
+/*
     tmat[0][0]=cos(scale);
     tmat[2][0]=-sin(scale);
     tmat[0][2]=sin(scale);
     tmat[2][2]=cos(scale); 
-
+*/
     if (points[0].cx > 0.99) points[0].cx =0;
     if (points[0].cy > 0.99) points[0].cy =0;
     if (points[0].cz > 0.99) points[0].cz =0;
@@ -87,11 +94,15 @@ void GeneratorRender::setPoints()
 
 void GeneratorRender::modifyPoints()
 {
-    //scale += 0.01f;
-    //tmat[0][0]=cos(scale);
-    //tmat[2][0]=-sin(scale);
-    //tmat[0][2]=sin(scale);
-    //tmat[2][2]=cos(scale); 
+    scale += 0.01f;
+
+    tmat[0][3]=cos(scale);
+    tmat[1][3]=sin(scale);
+
+ /*   tmat[0][0]=cos(scale);
+    tmat[2][0]=-sin(scale);
+    tmat[0][2]=sin(scale);
+    tmat[2][2]=cos(scale);  */
 }
 
 FileRender::FileRender(std::string filename)

@@ -12,9 +12,10 @@ static void error_callback(int error, const char* description)
 ApolloHandler::ApolloHandler()
 {
     //renderable = new FileRender("../models/test.raw");
-    //renderable = new Triangle();
-    Generator * generator = new Circle(0.7);
-   renderable = new GeneratorRender(generator);
+    renderable = new Triangle();
+    //Generator * generator = new Circle(0.7);
+    //Generator * generator = new Cube();
+   //renderable = new GeneratorRender(generator);
 //    renderable = new FileRender("../models/test_star.raw");
     glfwSetErrorCallback(error_callback);
     if (!glfwInit())
