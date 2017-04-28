@@ -21,8 +21,8 @@ std::vector<Point> Generator::getPoints()
 
 PartEllipsoid::PartEllipsoid(float a, float b, float c, float factor)
 {
-    int noOfPoints1 = a*180;
-    int noOfPoints2 = b*90;
+    int noOfPoints1 = a*200;
+    int noOfPoints2 = b*100;
     points.resize(noOfPoints1*noOfPoints2*6);
     float theta1,theta2;
     float phi1,phi2;
