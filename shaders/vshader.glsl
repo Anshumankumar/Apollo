@@ -1,4 +1,5 @@
 #version 130
+
 in vec4 vPosition;
 in vec4 vColor;
 uniform float gScale=1;
@@ -10,3 +11,4 @@ void main ()
     gl_Position =transMat*vPosition;
     color = vColor;
 }
+

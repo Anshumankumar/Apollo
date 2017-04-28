@@ -1,7 +1,5 @@
 #include <handler.hpp>
-
-std::vector<GLuint> ShaderHandler::shaderList;
-
+#include <functional>
 
 static void error_callback(int error, const char* description)
 {
@@ -9,14 +7,28 @@ static void error_callback(int error, const char* description)
 }
 
 
+void ApolloHandler::setUpGl()
+{
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClearDepth(1.0);
+    glDepthFunc(GL_LESS);
+    glEnable(GL_DEPTH_TEST);
+}
+void ApolloHandler::keyCallBack(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+    std::cout << "Got the callBack\n";
+}
+
 ApolloHandler::ApolloHandler()
 {
-    //renderable = new FileRender("../models/test.raw");
-    renderable = new Triangle();
     //Generator * generator = new Circle(0.7);
-    //Generator * generator = new Cube();
-   //renderable = new GeneratorRender(generator);
-//    renderable = new FileRender("../models/test_star.raw");
+    Generator * generator = new Cube();
+//    renderable = new FileRender("../models/test.raw");
+    //renderable = new Triangle();
+   // Generator * generator = new PartEllipsoid(0.7,0.7,0.7,1.0);
+    renderable = new GeneratorRender(generator);
     glfwSetErrorCallback(error_callback);
     if (!glfwInit())
         exit(2);
@@ -28,7 +40,7 @@ ApolloHandler::ApolloHandler()
     }
     glfwMakeContextCurrent(window);
     glfwSwapInterval(1);
-
+    glfwSetKeyCallback(window, ApolloHandler::keyCallBack);
 
     GLenum err=glewInit();
     if(err!=GLEW_OK)
@@ -36,16 +48,12 @@ ApolloHandler::ApolloHandler()
         std::cerr << "glewInit failed: " << glewGetErrorString(err) << std::endl;
         exit(1);
     }
-    glEnable(GL_POINTS);
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-    ShaderHandler vShader("../shaders/vshader.glsl",GL_VERTEX_SHADER);
-    ShaderHandler fShader("../shaders/fshader.glsl",GL_FRAGMENT_SHADER); 
-    vShader.compileShader();
-    fShader.compileShader();
-    program=ShaderHandler::useProgram();
+    setUpGl();
+    std::vector<ShaderUtil::sprop>shaderList;
+    shaderList.push_back(ShaderUtil::sprop("../shaders/vshader.glsl",GL_VERTEX_SHADER));
+    shaderList.push_back(ShaderUtil::sprop("../shaders/fshader.glsl",GL_FRAGMENT_SHADER));
+    ShaderUtil shaderUtil(shaderList);
+    program=shaderUtil.getProgram();
     renderable->initialize(program);
     renderable->setPoints();
        
@@ -81,9 +89,7 @@ void ApolloHandler::run()
 
 void ApolloHandler::singleLoop()
 {
-    glClear(GL_COLOR_BUFFER_BIT |GL_DEPTH_BUFFER_BIT);
-
-    
+    glClear(GL_COLOR_BUFFER_BIT |GL_DEPTH_BUFFER_BIT);    
     renderable->render();
     glfwSwapBuffers(window);
     glfwPollEvents();

@@ -11,10 +11,7 @@ void Renderable::initialize(GLuint program)
     glGenBuffers (1, &vbo);
     glBindBuffer (GL_ARRAY_BUFFER, vbo);
     this->program = program;
-    tmat[0][0]=1;
-    tmat[1][1]=1;
-    tmat[2][2]=1;
-    tmat[3][3]=1;
+    tmat = glm::mat4(1.0f);
 }
 
   
@@ -25,12 +22,10 @@ void Renderable::render()
     GLuint matLocation = glGetUniformLocation(program, "transMat");
 
     modifyPoints();
-    glUniformMatrix4fv(matLocation, 1, GL_TRUE, &tmat[0][0]);
-    glBufferData (GL_ARRAY_BUFFER,points.size()*sizeof(Point),
-            &points[0], GL_STATIC_DRAW);
-    glDrawArrays(GL_TRIANGLES, 0, points.size());
-//    glDrawArrays(GL_LINES, 0, points.size());
-//    glDrawArrays(GL_TRIANGLES, 0, points.size());
+    glUniformMatrix4fv(matLocation, 1, GL_FALSE, &tmat[0][0]);
+ // glDrawArrays(GL_POINTS, 0, points.size());
+//    glDrawArrays(GL_LINE_LOOP, 0, points.size());
+ glDrawArrays(GL_TRIANGLES, 0, points.size());
 
 }
 
@@ -48,18 +43,7 @@ void  Triangle::modifyPoints()
 {
     
     scale += 0.01f;
- /*   tmat[0][0]=cos(scale);
-    tmat[0][1]=-sin(scale);
-    tmat[1][0]=sin(scale);
-    tmat[1][1]=cos(scale); */
-    tmat[0][3] = 0.5*cos(scale);   
-    tmat[1][3] = 0.5*sin(scale);   
-/*
-    tmat[0][0]=cos(scale);
-    tmat[2][0]=-sin(scale);
-    tmat[0][2]=sin(scale);
-    tmat[2][2]=cos(scale); 
-*/
+    tmat = glm::rotate(glm::mat4(1.0f),scale,glm::vec3(0.0,1.0,0.0));
     if (points[0].cx > 0.99) points[0].cx =0;
     if (points[0].cy > 0.99) points[0].cy =0;
     if (points[0].cz > 0.99) points[0].cz =0;
@@ -90,19 +74,21 @@ GeneratorRender::GeneratorRender(Generator * generator)
 void GeneratorRender::setPoints()
 {
     points = generator->getPoints();
+    glBufferData (GL_ARRAY_BUFFER,points.size()*sizeof(Point),
+            &points[0], GL_STATIC_DRAW);
+ 
 }
 
 void GeneratorRender::modifyPoints()
 {
-    scale += 0.01f;
-
-    tmat[0][3]=cos(scale);
-    tmat[1][3]=sin(scale);
-
- /*   tmat[0][0]=cos(scale);
-    tmat[2][0]=-sin(scale);
-    tmat[0][2]=sin(scale);
-    tmat[2][2]=cos(scale);  */
+    scale+=0.01f;
+    tmat=glm::mat4(1.0);    
+   // tmat=glm::scale(tmat,glm::vec3(1.0,1.0,1.0));
+    glm::mat4 identity(1.0);
+    glm::mat4 rot=glm::rotate(identity,scale,glm::vec3(0.0,1.0,0.0));
+    glm::mat4 trans = glm::translate(identity,glm::vec3(-0.35,-0.35,-0.35));
+    tmat = glm::translate(rot,glm::vec3(-0.35,-0.35,-0.35));
+    tmat = trans*rot;
 }
 
 FileRender::FileRender(std::string filename)

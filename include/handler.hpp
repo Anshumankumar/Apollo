@@ -14,6 +14,9 @@ class ApolloHandler
     Renderable *renderable;
     void run();
     void singleLoop();
+    void setUpGl();
+    static void keyCallBack(GLFWwindow*,int,int,int,int);
+    static ApolloHandler * instance;
 };
 
 

@@ -8,14 +8,13 @@
 #include <string>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-
+#include <utility>
 class ShaderHandler
 {
     GLuint shader;
     GLenum shaderType;
     char *buffer;
     public:
-    static std::vector<GLuint> shaderList;
     ShaderHandler(std::string filename, GLenum shaderType)
     {
         this->shaderType = shaderType;
@@ -52,13 +51,27 @@ class ShaderHandler
             std::cerr << shaderType << " " << infoLog << std::endl; 
             exit(2);
         }
-        shaderList.push_back(shader);
+        return shader;
     } 
+};
 
-    static GLuint useProgram()
+class ShaderUtil
+{
+    std::vector<GLuint> shaderList;
+    public:
+    using sprop = std::pair<std::string,GLenum>;
+    ShaderUtil(std::vector<sprop> pairs)
+    {
+        for(auto pair:pairs)
+        {
+            ShaderHandler shader(pair.first,pair.second); 
+            shaderList.push_back(shader.compileShader());
+        }
+    }
+
+    GLuint getProgram()
     {
         GLuint program = glCreateProgram();
-
         for(auto &shader:shaderList)
         {
             glAttachShader(program, shader);
@@ -77,10 +90,9 @@ class ShaderHandler
             std::cerr<<"GLSL Linker failure: "<<strInfoLog<<std::endl;
             delete[] strInfoLog;
         }
-//        for(auto &shader:shaderList)
-  //          glDetachShader(program, shader);
+        for(auto &shader:shaderList)
+            glDetachShader(program, shader);
         return program;
     }
 };
-
 #endif //SHADER_HANDLER_HPP

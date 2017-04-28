@@ -1,11 +1,16 @@
 #ifndef RENDERABLE
 #define RENDERABLE
 
+#define GLM_FORCE_RADIANS
+
 #include <vector>
 #include <utils.hpp>
 #include <string>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include <glm/mat4x4.hpp>
+#include <glm/vec3.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include <generator.hpp>
 
 class Renderable
@@ -15,7 +20,7 @@ class Renderable
     GLuint vao,vbo,program;
     float scale =0;
     public:
-    float tmat[4][4] = {{0}};
+    glm::mat4 tmat;
     void initialize(GLuint program);
     virtual void setPoints()=0;
     void render();
