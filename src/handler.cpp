@@ -27,9 +27,11 @@ void ApolloHandler::keyCallBack(GLFWwindow* window, int key, int scancode, int a
 
 ApolloHandler::ApolloHandler()
 {
+    //Generator * generator = new Circle(0.7);
+    Generator * generator = new Cube();
 //    renderable = new FileRender("../models/test.raw");
     //renderable = new Triangle();
-    Generator * generator = new PartEllipsoid(0.7,0.7,0.7,1.0);
+   // Generator * generator = new PartEllipsoid(0.7,0.7,0.7,1.0);
     renderable = new GeneratorRender(generator);
     glfwSetErrorCallback(error_callback);
     if (!glfwInit())

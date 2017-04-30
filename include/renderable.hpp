@@ -1,6 +1,8 @@
 #ifndef RENDERABLE
 #define RENDERABLE
 
+#define GLM_FORCE_RADIANS
+
 #include <vector>
 #include <utils.hpp>
 #include <string>

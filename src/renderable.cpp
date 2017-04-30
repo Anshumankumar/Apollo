@@ -23,9 +23,9 @@ void Renderable::render()
 
     modifyPoints();
     glUniformMatrix4fv(matLocation, 1, GL_FALSE, &tmat[0][0]);
-  glDrawArrays(GL_POINTS, 0, points.size());
+ // glDrawArrays(GL_POINTS, 0, points.size());
 //    glDrawArrays(GL_LINE_LOOP, 0, points.size());
- //  glDrawArrays(GL_TRIANGLES, 0, points.size());
+ glDrawArrays(GL_TRIANGLES, 0, points.size());
 
 }
 
@@ -34,10 +34,9 @@ void  Renderable::modifyPoints(){}
 void Triangle::setPoints()
 {
     points.resize(0);
-    points.push_back({0.0,0.7,0.1,1.0,1.0,1.0,1.0,1.0});
-    points.push_back({0.7,-0.7,0.1,1.0,0.5,0.5,0.0,1.0});
-    points.push_back({-0.7,-0.7,0.1,1.0,0.0,1.0,1.0,1.0});
-
+    points.push_back({0.0,0.3,0.1,1.0,1.0,1.0,1.0,1.0});
+    points.push_back({0.2598,-0.15,0.1,1.0,0.5,0.5,0.0,1.0});
+    points.push_back({-0.2598,-0.15,0.1,1.0,0.0,1.0,1.0,1.0});
 }
  
 void  Triangle::modifyPoints()
@@ -82,14 +81,14 @@ void GeneratorRender::setPoints()
 
 void GeneratorRender::modifyPoints()
 {
-    scale += 0.01f;
-    tmat = glm::mat4(1.0f);
-
-     glm::mat4 tmat2 = glm::perspective<float>(glm::pi<float>()/4,2.0,0.1,2.0);
-
-      tmat = glm::rotate(tmat,scale,glm::vec3(1.0,0.0,0.0));
-      tmat = glm::translate(tmat,glm::vec3(0.0,0.0,-1.0));
-  //   glm::mat4 tmat2 = glm::perspective<float>(glm::pi<float>()/4,2.0,0.1,2.0);
+    scale+=0.01f;
+    tmat=glm::mat4(1.0);    
+   // tmat=glm::scale(tmat,glm::vec3(1.0,1.0,1.0));
+    glm::mat4 identity(1.0);
+    glm::mat4 rot=glm::rotate(identity,scale,glm::vec3(0.0,1.0,0.0));
+    glm::mat4 trans = glm::translate(identity,glm::vec3(-0.35,-0.35,-0.35));
+    tmat = glm::translate(rot,glm::vec3(-0.35,-0.35,-0.35));
+    tmat = trans*rot;
 }
 
 FileRender::FileRender(std::string filename)
