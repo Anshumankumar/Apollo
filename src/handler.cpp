@@ -6,7 +6,10 @@ static void error_callback(int error, const char* description)
     fprintf(stderr, "Error: %s\n", description);
 }
 
+void ApolloHandler::keyCalls(){
 
+     std::cout << "Got the callBack\n";
+}
 void ApolloHandler::setUpGl()
 {
     glEnable(GL_BLEND);
@@ -18,7 +21,8 @@ void ApolloHandler::setUpGl()
 }
 void ApolloHandler::keyCallBack(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-    std::cout << "Got the callBack\n";
+     auto handler = (ApolloHandler*)(glfwGetWindowUserPointer(window));
+     handler->keyCalls();
 }
 
 ApolloHandler::ApolloHandler()
@@ -38,6 +42,7 @@ ApolloHandler::ApolloHandler()
     }
     glfwMakeContextCurrent(window);
     glfwSwapInterval(1);
+    glfwSetWindowUserPointer(window, this);
     glfwSetKeyCallback(window, ApolloHandler::keyCallBack);
 
     GLenum err=glewInit();

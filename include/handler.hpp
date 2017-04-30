@@ -8,6 +8,7 @@
 class ApolloHandler
 {
     GLuint program;
+    void keyCalls();
     public:
     ApolloHandler();
     GLFWwindow *window;
@@ -16,7 +17,6 @@ class ApolloHandler
     void singleLoop();
     void setUpGl();
     static void keyCallBack(GLFWwindow*,int,int,int,int);
-    static ApolloHandler * instance;
 };
 
 
