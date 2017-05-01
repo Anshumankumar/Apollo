@@ -4,6 +4,6 @@
 
 int main()
 {
-    ApolloHandler mainHandler;
+    apollo::ApolloHandler mainHandler;
     mainHandler.run();
 }

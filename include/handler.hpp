@@ -4,7 +4,8 @@
 #include <cstdlib>
 #include <shaderHandler.hpp>
 #include <renderable.hpp>
-
+namespace apollo
+{
 class ApolloHandler
 {
     GLuint program;
@@ -18,6 +19,6 @@ class ApolloHandler
     void setUpGl();
     static void keyCallBack(GLFWwindow*,int,int,int,int);
 };
-
+}
 
 #endif //APOLLO_HANDLER_HPP

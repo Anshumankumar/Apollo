@@ -9,6 +9,8 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <utility>
+namespace apollo
+{
 class ShaderHandler
 {
     GLuint shader;
@@ -95,4 +97,5 @@ class ShaderUtil
         return program;
     }
 };
+}
 #endif //SHADER_HANDLER_HPP

@@ -7,11 +7,14 @@
 #include <fstream>
 #include <cmath>
 
+namespace apollo
+{
+     Point getPointEllipse(float a,float b,float c,float theta, float phi);
+
 class Generator
 {
     protected:
     std::vector <Point> points;
-    std::vector <Point> vertices;
     
     public:
     std::vector<Point> getPoints();
@@ -22,21 +25,22 @@ class PartEllipsoid:public Generator
 {    
     public:
 
-    Point getPointEllipse(float a,float b,float c,float theta, float phi);
     PartEllipsoid(float a,float b, float c, float factor);
 }; 
 
 class Circle:public Generator
 {
     public:
-
     Circle(float radius);
 };
 
 class Cube:public Generator
 {
     public:
-    Cube();
+    Cube(float side);
     void addSquarePoint(int a, int b, int c, int d, std::vector <Point> vertices);
+    void addSquarePoint(int index, std::vector <Point> &vertices);
 };
+
+}
 #endif // GENERATOR_HPP

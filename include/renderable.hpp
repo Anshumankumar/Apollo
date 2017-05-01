@@ -12,7 +12,8 @@
 #include <glm/vec3.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <generator.hpp>
-
+namespace apollo
+{
 class Renderable
 {
     protected:
@@ -53,5 +54,5 @@ class FileRender:public Renderable
     FileRender(std::string filename);
     void setPoints();
 };
-
+}
 #endif //RENDERABLE

@@ -1,6 +1,6 @@
 #include <handler.hpp>
-#include <functional>
 
+using namespace apollo;
 static void error_callback(int error, const char* description)
 {
     fprintf(stderr, "Error: %s\n", description);
@@ -27,8 +27,8 @@ void ApolloHandler::keyCallBack(GLFWwindow* window, int key, int scancode, int a
 
 ApolloHandler::ApolloHandler()
 {
-    //Generator * generator = new Circle(0.7);
-    Generator * generator = new Cube();
+//   Generator * generator = new Circle(0.7);
+    Generator * generator = new Cube(0.7);
 //    renderable = new FileRender("../models/test.raw");
     //renderable = new Triangle();
    // Generator * generator = new PartEllipsoid(0.7,0.7,0.7,1.0);
