@@ -89,7 +89,7 @@ void GeneratorRender::modifyPoints()
     glm::mat4 rot=glm::rotate(identity,scale,glm::vec3(1.0,0.0,0.0));
     glm::mat4 trans = glm::translate(identity,glm::vec3(-0.35,-0.35,-0.35));
     tmat = glm::translate(rot,glm::vec3(-0.35,-0.35,-0.35));
-    tmat = trans*rot;
+    tmat = rot;
 
 //   tmat=glm::mat4(1.0);    
 }

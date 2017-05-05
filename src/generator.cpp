@@ -16,7 +16,7 @@ void Generator::savePoints(std::string filename)
     out.close();
 }
 
-Point getPointEllipse( float a, float b, float c, float theta, float phi)
+Point getPointEllipse( float a, float b, float c, float theta, float phi, float zShift)
 {
     Point point;
     point.cx =  fabs(sin(0.5 *phi));
@@ -25,7 +25,7 @@ Point getPointEllipse( float a, float b, float c, float theta, float phi)
     point.a =   1.0;
     point.x = a*cos(theta)*sin(phi);
     point.y = b*sin(theta)*sin(phi);
-    point.z = c*cos(phi);
+    point.z = c*cos(phi)+zShift;
     point.w = 1;
     return point;
 }
@@ -72,8 +72,8 @@ Circle::Circle(float radius)
     {
         theta = i*2*M_PI/180;
         theta1 = (i+1)*2*M_PI/180;
-        points.push_back(getPointEllipse(0.5,0.5,0,theta,M_PI/2));
-        points.push_back(getPointEllipse(0.5,0.5,0,theta1,M_PI/2));
+        points.push_back(getPointEllipse(radius,radius,0,theta,M_PI/2));
+        points.push_back(getPointEllipse(radius,radius,0,theta1,M_PI/2));
         points.push_back(getPointEllipse(0,0,0,0,0));
     }
 }
@@ -106,4 +106,28 @@ void Cube::addSquarePoint(int index, std::vector<Point> & vertices)
     for (auto in:indexes) points.push_back(vertices[positive[in]]);
     for (auto in:indexes) points.push_back(vertices[negative[in]]);
 }
+Frustum::Frustum(float rTop, float rBot, float height)
+{
+    Circle topCircle(rTop);
+    Circle bottomCircle(rBot);
+    for(int i=0;i<180;i++)
+    {
+        float theta1 = i*2*M_PI/180;
+        float theta2 = (i+1)*2*M_PI/180;
+        points.push_back(getPointEllipse(rTop,rTop,0,theta1,M_PI/2));
+        points.push_back(getPointEllipse(rTop,rTop,0,theta2,M_PI/2));
+        points.push_back(getPointEllipse(rBot,rBot,0,theta2,M_PI/2,height));
+        points.push_back(getPointEllipse(rBot,rBot,0,theta2,M_PI/2,height));
+        points.push_back(getPointEllipse(rBot,rBot,0,theta1,M_PI/2,height));
+        points.push_back(getPointEllipse(rTop,rTop,0,theta1,M_PI/2));
+
+    }
+    std::vector<Point> tp=topCircle.getPoints();  
+    std::vector<Point> bp=bottomCircle.getPoints(); 
+    for(auto &point:bp)point.z=height;
+    points.insert(points.end(),tp.begin(),tp.end());
+    points.insert(points.end(),bp.begin(),bp.end());
+
+}
+
 }
