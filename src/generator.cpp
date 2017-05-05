@@ -16,6 +16,41 @@ void Generator::savePoints(std::string filename)
     out.close();
 }
 
+void Generator::rotate(float ax, float ay, float az)
+{
+    glm::mat4 mat(1.0);
+    mat=glm::rotate(mat,az,glm::vec3(0,0,1));
+    mat=glm::rotate(mat,ay,glm::vec3(0,1,0));
+    mat=glm::rotate(mat,ax,glm::vec3(1,0,0));
+    for (auto &point:points)
+    {
+        GPoint * p= (GPoint *)(&point);
+        p->x = mat*p->x;
+    }
+}
+
+void Generator::translate(float x, float y, float z)
+{
+    glm::mat4 mat(1.0);
+    mat=glm::translate(mat,glm::vec3(x,y,z));
+    for (auto &point:points)
+    {
+        GPoint * p= (GPoint *)(&point);
+        p->x = mat*p->x;
+    }
+
+}
+void Generator::scale(float sx, float sy, float sz)
+{
+    glm::mat4 identity(1.0);
+    glm::mat4 mat=glm::scale(identity,glm::vec3(sx,sy,sz));
+    for (auto &point:points)
+    {
+        GPoint * p= (GPoint *)(&point);
+        p->x = mat*p->x;
+    }
+}
+
 Point getPointEllipse( float a, float b, float c, float theta, float phi, float zShift)
 {
     Point point;
@@ -127,7 +162,16 @@ Frustum::Frustum(float rTop, float rBot, float height)
     for(auto &point:bp)point.z=height;
     points.insert(points.end(),tp.begin(),tp.end());
     points.insert(points.end(),bp.begin(),bp.end());
-
 }
 
+Combiner::Combiner(std::vector<Generator*> generators)
+{
+    for (auto generator:generators)
+    {
+        for (auto point:generator->getPoints())
+        {
+            points.push_back(point);
+        }
+    }
+}
 }

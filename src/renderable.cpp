@@ -91,7 +91,7 @@ void GeneratorRender::modifyPoints()
     tmat = glm::translate(rot,glm::vec3(-0.35,-0.35,-0.35));
     tmat = rot;
 
-//   tmat=glm::mat4(1.0);    
+//    tmat=glm::mat4(1.0);    
 }
 
 FileRender::FileRender(std::string filename)
