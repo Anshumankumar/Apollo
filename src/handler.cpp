@@ -6,9 +6,8 @@ static void error_callback(int error, const char* description)
     fprintf(stderr, "Error: %s\n", description);
 }
 
-void ApolloHandler::keyCalls(){
-
-     std::cout << "Got the callBack\n";
+void ApolloHandler::keyCalls( ){
+    std::cout << "Got the callBack\n";
 }
 void ApolloHandler::setUpGl()
 {
@@ -21,19 +20,26 @@ void ApolloHandler::setUpGl()
 }
 void ApolloHandler::keyCallBack(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-     auto handler = (ApolloHandler*)(glfwGetWindowUserPointer(window));
-     handler->keyCalls();
+    auto handler = (ApolloHandler*)(glfwGetWindowUserPointer(window));
+    handler->keyCalls();
+    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+        glfwSetWindowShouldClose(window,GLFW_TRUE);
 }
 
 ApolloHandler::ApolloHandler()
 {
-//   Generator * generator = new Circle(0.7);
-  //  Generator * generator = new Cube(0.7);
+    //   Generator * generator = new Circle(0.7);
+    //  Generator * generator = new Cube(0.7);
     Generator * generator = new Frustum(0.8,0.4,0.5);
-//    renderable = new FileRender("../models/test.raw");
+    //    renderable = new FileRender("../models/test.raw");
     //renderable = new Triangle();
-   // Generator * generator = new PartEllipsoid(0.7,0.7,0.7,1.0);
+    // Generator * generator = new PartEllipsoid(0.7,0.7,0.7,1.0);
     renderable = new GeneratorRender(generator);
+    if (!glfwInit())
+    {
+        glfwTerminate();
+    }
+
     glfwSetErrorCallback(error_callback);
     if (!glfwInit())
         exit(2);
@@ -62,7 +68,7 @@ ApolloHandler::ApolloHandler()
     program=shaderUtil.getProgram();
     renderable->initialize(program);
     renderable->setPoints();
-       
+
     GLint vpos_location = glGetAttribLocation(program, "vPosition");
     GLint vcol_location = glGetAttribLocation(program, "vColor");
 
@@ -77,7 +83,7 @@ ApolloHandler::ApolloHandler()
     glUseProgram(program);
 
 
-   
+
 
 
 

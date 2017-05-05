@@ -1,9 +1,9 @@
 #ifndef APOLLO_HANDLER_HPP
 #define APOLLO_HANDLER_HPP
-
 #include <cstdlib>
 #include <shaderHandler.hpp>
 #include <renderable.hpp>
+#include <GLFW/glfw3.h>
 namespace apollo
 {
 class ApolloHandler
