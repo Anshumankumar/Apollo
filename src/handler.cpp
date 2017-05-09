@@ -30,14 +30,17 @@ ApolloHandler::ApolloHandler()
 //   Generator * generator = new Circle(0.7);
     Generator * cube = new Cube(0.7);
     Generator * frustum = new Frustum(0.8,0.4,0.5);
+    Generator * sphere = new PartEllipsoid(0.2,0.3,0.4,1);
     frustum->scale(1.0,1.0,1.0);
     frustum->rotate(-M_PI/2,0.0,0.0);
     frustum->translate(0.0,-0.2,0.0);
     cube->translate(-0.35,0.30,-0.35);
+    sphere->translate(0.0,-0.50,0);
     cube->scale(0.5,0.8,0.5);
     std::vector <Generator*> generators;
     generators.push_back(frustum);
     generators.push_back(cube);
+    generators.push_back(sphere);
     Generator * generator = new Combiner(generators);
 //    renderable = new FileRender("../models/test.raw");
     //renderable = new Triangle();
