@@ -24,8 +24,7 @@ void Generator::rotate(float ax, float ay, float az)
     mat=glm::rotate(mat,ax,glm::vec3(1,0,0));
     for (auto &point:points)
     {
-        GPoint * p= (GPoint *)(&point);
-        p->x = mat*p->x;
+        point.x = mat*point.x;
     }
 }
 
@@ -35,8 +34,7 @@ void Generator::translate(float x, float y, float z)
     mat=glm::translate(mat,glm::vec3(x,y,z));
     for (auto &point:points)
     {
-        GPoint * p= (GPoint *)(&point);
-        p->x = mat*p->x;
+        point.x = mat*point.x;
     }
 
 }
@@ -46,22 +44,16 @@ void Generator::scale(float sx, float sy, float sz)
     glm::mat4 mat=glm::scale(identity,glm::vec3(sx,sy,sz));
     for (auto &point:points)
     {
-        GPoint * p= (GPoint *)(&point);
-        p->x = mat*p->x;
+        point.x = mat*point.x;
     }
 }
 
 Point getPointEllipse( float a, float b, float c, float theta, float phi, float zShift)
 {
     Point point;
-    point.cx =  fabs(sin(0.5 *phi));
-    point.cy =  fabs(sin(0.5 *theta));
-    point.cz =  0.5;
-    point.a =   1.0;
-    point.x = a*cos(theta)*sin(phi);
-    point.y = b*sin(theta)*sin(phi);
-    point.z = c*cos(phi)+zShift;
-    point.w = 1;
+    point.c = glm::vec4(fabs(sin(0.5 *phi)), fabs(sin(0.5 *theta)), 0.5, 1.0);
+    point.x = glm::vec4(a*cos(theta)*sin(phi), b*sin(theta)*sin(phi), 
+                        c*cos(phi)+zShift,1);
     return point;
 }
 
@@ -120,7 +112,7 @@ Cube::Cube(float a)
     for (int i=0;i<8;i++)
     {
         m = a*(bool)(i&X);n = a*(bool)(i&Y);o= a*(bool)(i&Z);
-        vertices.push_back({m,n,o,1,m,n,o,1});
+        vertices.push_back({glm::vec4(m,n,o,1),glm::vec4(m,n,o,1)});
     }
     for (int j=0; j<3;j++)
     {
@@ -141,6 +133,8 @@ void Cube::addSquarePoint(int index, std::vector<Point> & vertices)
     for (auto in:indexes) points.push_back(vertices[positive[in]]);
     for (auto in:indexes) points.push_back(vertices[negative[in]]);
 }
+
+
 Frustum::Frustum(float rTop, float rBot, float height)
 {
     Circle topCircle(rTop);
@@ -159,7 +153,7 @@ Frustum::Frustum(float rTop, float rBot, float height)
     }
     std::vector<Point> tp=topCircle.getPoints();  
     std::vector<Point> bp=bottomCircle.getPoints(); 
-    for(auto &point:bp)point.z=height;
+    for(auto &point:bp)point.x.z=height;
     points.insert(points.end(),tp.begin(),tp.end());
     points.insert(points.end(),bp.begin(),bp.end());
 }

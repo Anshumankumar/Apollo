@@ -77,6 +77,8 @@ ApolloHandler::ApolloHandler()
        
     GLint vpos_location = glGetAttribLocation(program, "vPosition");
     GLint vcol_location = glGetAttribLocation(program, "vColor");
+    GLint vnor_location = glGetAttribLocation(program, "vNormal");
+    GLint vtex_location = glGetAttribLocation(program, "vTex");
 
 
 
@@ -85,6 +87,11 @@ ApolloHandler::ApolloHandler()
     glEnableVertexAttribArray(vpos_location);
     glVertexAttribPointer(vcol_location, 4, GL_FLOAT, GL_FALSE,
             sizeof(Point), (void*) (sizeof(float) * 4));
+    glVertexAttribPointer(vnor_location, 3, GL_FLOAT, GL_FALSE,
+            sizeof(Point), (void*) (sizeof(float) * 8));
+    glVertexAttribPointer(vtex_location, 2, GL_FLOAT, GL_FALSE,
+            sizeof(Point), (void*) (sizeof(float) * 11));
+
     glEnableVertexAttribArray(vcol_location);
     glUseProgram(program);
 

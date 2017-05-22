@@ -18,15 +18,13 @@ void Renderable::initialize(GLuint program)
   
 void Renderable::render()
 {
-    GLuint gScaleLocation = glGetUniformLocation(program, "gScale");
-    glUniform1f(gScaleLocation, sin(scale));
     GLuint matLocation = glGetUniformLocation(program, "transMat");
 
     modifyPoints();
     glUniformMatrix4fv(matLocation, 1, GL_FALSE, &tmat[0][0]);
  // glDrawArrays(GL_POINTS, 0, points.size());
 //    glDrawArrays(GL_LINE_LOOP, 0, points.size());
- glDrawArrays(GL_TRIANGLES, 0, points.size());
+    glDrawArrays(GL_TRIANGLES, 0, points.size());
 
 }
 
@@ -35,15 +33,15 @@ void  Renderable::modifyPoints(){}
 void Triangle::setPoints()
 {
     points.resize(0);
-    points.push_back({0.0,0.3,0.1,1.0,1.0,1.0,1.0,1.0});
-    points.push_back({0.2598,-0.15,0.1,1.0,0.5,0.5,0.0,1.0});
-    points.push_back({-0.2598,-0.15,0.1,1.0,0.0,1.0,1.0,1.0});
+ //   points.push_back({0.0,0.3,0.1,1.0,1.0,1.0,1.0,1.0});
+ //   points.push_back({0.2598,-0.15,0.1,1.0,0.5,0.5,0.0,1.0});
+ //   points.push_back({-0.2598,-0.15,0.1,1.0,0.0,1.0,1.0,1.0});
 }
  
 void  Triangle::modifyPoints()
 {
     
-    scale += 0.01f;
+/*    scale += 0.01f;
     tmat = glm::rotate(glm::mat4(1.0f),scale,glm::vec3(0.0,1.0,0.0));
     if (points[0].cx > 0.99) points[0].cx =0;
     if (points[0].cy > 0.99) points[0].cy =0;
@@ -65,6 +63,7 @@ void  Triangle::modifyPoints()
     points[2].cx= points[2].cx +0.0015;
     points[2].cy= points[2].cy +0.0012;
     points[2].cz= points[2].cz +0.00045;
+*/
 }
 
 GeneratorRender::GeneratorRender(Generator * generator)
