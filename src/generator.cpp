@@ -1,5 +1,6 @@
 #include <generator.hpp>
 #include <iostream>
+
 namespace apollo
 {
 void Generator::savePoints(std::string filename)
@@ -25,6 +26,7 @@ void Generator::rotate(float ax, float ay, float az)
     for (auto &point:points)
     {
         point.x = mat*point.x;
+        point.n = glm::mat3(mat)*point.n;
     }
 }
 
@@ -48,12 +50,62 @@ void Generator::scale(float sx, float sy, float sz)
     }
 }
 
+void Generator::getColor()
+{
+    double x=1,y=1,z=1,a=1;
+     if (params.getParam("c") != nullptr) 
+    {
+        Params p = params.get("c");
+        std::cout << "HELLO\n";
+        if (p.getParam("x") != nullptr ) x=p.get<double>("x");
+        if (p.getParam("y") != nullptr ) y=p.get<double>("y");
+        if (p.getParam("z") != nullptr ) z=p.get<double>("z");
+        if (p.getParam("a") != nullptr ) z=p.get<double>("a");
+    }
+    color = glm::vec4(x,y,z,a);
+
+}
+glm::vec3 getVec(Params p, float x=0, float y=0, float z=0)
+{
+    if (p.getParam("x") != nullptr ) x=p.get<double>("x");
+    if (p.getParam("y") != nullptr ) y=p.get<double>("y");
+    if (p.getParam("z") != nullptr ) z=p.get<double>("z");
+    return glm::vec3(x,y,z);
+}
+
+void Generator::modify()
+{
+    if (params.getParam("s") != nullptr) 
+    {
+        glm::vec3 t = getVec(params.get("s"),1,1,1);
+        scale(t.x,t.y,t.z);
+    }
+
+
+    if (params.getParam("r") != nullptr)
+    {
+         glm::vec3 t = getVec(params.get("r"));
+         rotate(t.x,t.y,t.z);
+    }
+    if (params.getParam("t") != nullptr) 
+    {
+        glm::vec3 t = getVec(params.get("t"));
+        translate(t.x,t.y,t.z);
+    }
+
+}
+Point getPointFrustum(float radius, float zShift, float angle)
+{
+    
+}
 Point getPointEllipse( float a, float b, float c, float theta, float phi, float zShift)
 {
     Point point;
-    point.c = glm::vec4(fabs(sin(0.5 *phi)), fabs(sin(0.5 *theta)), 0.5, 1.0);
+    //point.c = glm::vec4(fabs(sin(0.5 *phi)), fabs(sin(0.5 *theta)), 0.5, 1.0);
+    point.c = glm::vec4(0.0, 0.0, 1.0, 1.0);
     point.x = glm::vec4(a*cos(theta)*sin(phi), b*sin(theta)*sin(phi), 
                         c*cos(phi)+zShift,1);
+    point.n = glm::vec3(cos(theta)*sin(phi),sin(theta)*sin(phi),cos(phi));
     return point;
 }
 
@@ -64,8 +116,8 @@ std::vector<Point> Generator::getPoints()
 
 PartEllipsoid::PartEllipsoid(float a, float b, float c, float factor)
 {
-    int noOfPoints1 = a*200;
-    int noOfPoints2 = b*100;
+    int noOfPoints1 = a*100;
+    int noOfPoints2 = b*50;
     points.resize(noOfPoints1*noOfPoints2*6);
     float theta1,theta2;
     float phi1,phi2;
@@ -112,7 +164,7 @@ Cube::Cube(float a)
     for (int i=0;i<8;i++)
     {
         m = a*(bool)(i&X);n = a*(bool)(i&Y);o= a*(bool)(i&Z);
-        vertices.push_back({glm::vec4(m,n,o,1),glm::vec4(m,n,o,1)});
+        vertices.push_back({glm::vec4(m,n,o,1),glm::vec4(1,1,0,1)});
     }
     for (int j=0; j<3;j++)
     {
@@ -120,15 +172,16 @@ Cube::Cube(float a)
     } 
 }
 
-void Cube::addSquarePoint(int index, std::vector<Point> & vertices)
+void Cube::addSquarePoint(int index, std::vector<Point>  vertices)
 {
+    glm::vec3 normal = glm::vec3((1<<0)&index,(bool)((1<<1)&index),(bool)((1<<2)&index));
     int indexes[] ={0,1,2,1,2,3};
     int positive[4]; int negative[4];
     int pi=0; int ni=0;
     for(int i=0;i<8;i++)
     {
-        if (i&index) positive[pi++] = i; 
-        else negative[ni++] = i; 
+        if (i&index) {positive[pi++] = i; vertices[i].n=normal;}
+        else {negative[ni++] = i; vertices[i].n = -normal;}
     }
     for (auto in:indexes) points.push_back(vertices[positive[in]]);
     for (auto in:indexes) points.push_back(vertices[negative[in]]);
@@ -156,6 +209,16 @@ Frustum::Frustum(float rTop, float rBot, float height)
     for(auto &point:bp)point.x.z=height;
     points.insert(points.end(),tp.begin(),tp.end());
     points.insert(points.end(),bp.begin(),bp.end());
+}
+
+Triangle::Triangle()
+{
+    params = parseParam("temp.param");
+    getColor();
+    points.push_back({glm::vec4(0.0,sqrt(3)/3,0.0,1.0),color,glm::vec3(0,0,-1.0)});
+    points.push_back({glm::vec4(0.5,-sqrt(3)/6,0.0,1.0),color,glm::vec3(0,0,-1.0)});
+    points.push_back({glm::vec4(-0.5,-sqrt(3)/6,0.0,1.0),color,glm::vec3(0,0,-1.0)});
+    modify();
 }
 
 Combiner::Combiner(std::vector<Generator*> generators)

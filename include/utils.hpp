@@ -6,13 +6,6 @@
 
 namespace apollo
 {
-struct TPoint
-{
-    float x,y,z,w;
-    float cx,cy,cz,a;
-    float nx,ny,nz;
-    float tx,ty;
-};
 
 struct Point
 {

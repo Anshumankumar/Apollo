@@ -22,49 +22,13 @@ void Renderable::render()
 
     modifyPoints();
     glUniformMatrix4fv(matLocation, 1, GL_FALSE, &tmat[0][0]);
- // glDrawArrays(GL_POINTS, 0, points.size());
-//    glDrawArrays(GL_LINE_LOOP, 0, points.size());
-    glDrawArrays(GL_TRIANGLES, 0, points.size());
+    GLuint drawType = GL_TRIANGLES;
+    glDrawArrays(drawType, 0, points.size());
 
 }
 
 void  Renderable::modifyPoints(){}
 
-void Triangle::setPoints()
-{
-    points.resize(0);
- //   points.push_back({0.0,0.3,0.1,1.0,1.0,1.0,1.0,1.0});
- //   points.push_back({0.2598,-0.15,0.1,1.0,0.5,0.5,0.0,1.0});
- //   points.push_back({-0.2598,-0.15,0.1,1.0,0.0,1.0,1.0,1.0});
-}
- 
-void  Triangle::modifyPoints()
-{
-    
-/*    scale += 0.01f;
-    tmat = glm::rotate(glm::mat4(1.0f),scale,glm::vec3(0.0,1.0,0.0));
-    if (points[0].cx > 0.99) points[0].cx =0;
-    if (points[0].cy > 0.99) points[0].cy =0;
-    if (points[0].cz > 0.99) points[0].cz =0;
-    points[0].cx= points[0].cx +0.0005;
-    points[0].cy= points[0].cy +0.0003;
-    points[0].cz= points[0].cz +0.0002;
-
-    if (points[1].cx > 0.99) points[1].cx =0;
-    if (points[1].cy > 0.99) points[1].cy =0;
-    if (points[1].cz > 0.99) points[1].cz =0;
-    points[1].cx= points[1].cx +0.001;
-    points[1].cy= points[1].cy +0.0025;
-    points[1].cz= points[1].cz +0.00035;
-
-    if (points[2].cx > 0.99) points[2].cx =0;
-    if (points[2].cy > 0.99) points[2].cy =0;
-    if (points[2].cz > 0.99) points[2].cz =0;
-    points[2].cx= points[2].cx +0.0015;
-    points[2].cy= points[2].cy +0.0012;
-    points[2].cz= points[2].cz +0.00045;
-*/
-}
 
 GeneratorRender::GeneratorRender(Generator * generator)
 {
@@ -85,10 +49,10 @@ void GeneratorRender::modifyPoints()
     tmat=glm::mat4(1.0);    
    // tmat=glm::scale(tmat,glm::vec3(1.0,1.0,1.0));
     glm::mat4 identity(1.0);
-    glm::mat4 rot=glm::rotate(identity,scale,glm::vec3(1.0,0.0,0.0));
+    glm::mat4 rot=glm::rotate(identity,scale,glm::vec3(0.0,1.0,0.0));
     glm::mat4 trans = glm::translate(identity,glm::vec3(-0.35,-0.35,-0.35));
-    tmat = glm::translate(rot,glm::vec3(-0.35,-0.35,-0.35));
-    tmat = rot;
+    tmat = glm::translate(identity,glm::vec3(0.0,0.5*sin(scale),0.0));
+   // tmat = rot;
 
 //    tmat=glm::mat4(1.0);    
 }
