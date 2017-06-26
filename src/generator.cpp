@@ -92,17 +92,18 @@ void Generator::modify()
         glm::vec3 t = getVec(params.get("t"));
         translate(t.x,t.y,t.z);
     }
-
 }
-Point getPointFrustum(float radius, float zShift, float angle)
+
+Point getPointFrustum(float radius, float theta, float angle, float zShift=0)
 {
-    
+    Point point;
+    point.c = color;    
+    point.x = glm::vec4(radius*cos(theta), radius*sin(theta),0,1); 
 }
 Point getPointEllipse( float a, float b, float c, float theta, float phi, float zShift)
 {
     Point point;
-    //point.c = glm::vec4(fabs(sin(0.5 *phi)), fabs(sin(0.5 *theta)), 0.5, 1.0);
-    point.c = glm::vec4(0.0, 0.0, 1.0, 1.0);
+    point.c = color;
     point.x = glm::vec4(a*cos(theta)*sin(phi), b*sin(theta)*sin(phi), 
                         c*cos(phi)+zShift,1);
     point.n = glm::vec3(cos(theta)*sin(phi),sin(theta)*sin(phi),cos(phi));
@@ -164,7 +165,7 @@ Cube::Cube(float a)
     for (int i=0;i<8;i++)
     {
         m = a*(bool)(i&X);n = a*(bool)(i&Y);o= a*(bool)(i&Z);
-        vertices.push_back({glm::vec4(m,n,o,1),glm::vec4(1,1,0,1)});
+        vertices.push_back({glm::vec4(m,n,o,1),color});
     }
     for (int j=0; j<3;j++)
     {
