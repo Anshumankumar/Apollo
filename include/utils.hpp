@@ -1,11 +1,18 @@
 #ifndef UTILS_HPP
 #define UTILS_HPP
+#include <glm/vec4.hpp>
+#include <glm/vec3.hpp>
+#include <glm/vec2.hpp>
+
 namespace apollo
 {
+
 struct Point
 {
-    float x,y,z,w;
-    float cx,cy,cz,a;;
+    glm::vec4 x;
+    glm::vec4 c;
+    glm::vec3 n; 
+    glm::vec2 t;
 };
 }
 #endif 

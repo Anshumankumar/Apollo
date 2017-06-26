@@ -28,15 +28,6 @@ class Renderable
     virtual void modifyPoints();
 };
 
-
-class Triangle:public Renderable
-{
-    public:
-    void setPoints();
-    void modifyPoints();
-};
-
-
 class GeneratorRender:public Renderable
 {
     Generator *generator;
