@@ -46,6 +46,20 @@ void GeneratorRender::setPoints()
 void GeneratorRender::modifyPoints()
 {
     scale+=0.01f;
+    float mean = 0.2*sin(scale);
+    float mean2 = 0.6*sin(1.7*scale);
+    float mean3 = 0.2*sin(2.7*scale);
+    points= generator->getPoints();
+    for(auto &point:points)
+    {
+        point.c.x=1*exp(-30*(point.x.y-mean)*(point.x.y-mean));
+        point.c.y=1*exp(-10*(point.x.x-mean2)*(point.x.x-mean2));
+        point.c.z=1*exp(-5*(point.x.y-mean3)*(point.x.y-mean3));
+    }
+    glBufferData (GL_ARRAY_BUFFER,points.size()*sizeof(Point),
+            &points[0], GL_STATIC_DRAW);
+ 
+
     tmat=glm::mat4(1.0);    
    // tmat=glm::scale(tmat,glm::vec3(1.0,1.0,1.0));
     glm::mat4 identity(1.0);
@@ -55,6 +69,7 @@ void GeneratorRender::modifyPoints()
    // tmat = rot;
 
 //    tmat=glm::mat4(1.0);    
+   // tmat = identity;
 }
 
 FileRender::FileRender(std::string filename)

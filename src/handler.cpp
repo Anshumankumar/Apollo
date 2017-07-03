@@ -30,6 +30,8 @@ ApolloHandler::ApolloHandler()
 //   Generator * generator = new Circle(0.7);
     Generator * cube = new Cube(0.7);
     Generator * triangle = new Triangle();
+//    Generator * square = new Square(0.7);
+    Generator * square = new CCircle(0.7,0.3,0.5);
     Generator * frustum = new Frustum(0.8,0.4,0.5);
     Generator * sphere = new PartEllipsoid(0.5,0.5,0.5,1);
     frustum->scale(1.0,1.0,1.0);
@@ -42,12 +44,13 @@ ApolloHandler::ApolloHandler()
  //   generators.push_back(frustum);
   //  generators.push_back(cube);
  //  generators.push_back(sphere);
-    generators.push_back(triangle);
+    generators.push_back(square);
     Generator * generator = new Combiner(generators);
 //    renderable = new FileRender("../models/test.raw");
    // renderable = new Triangle();
    // Generator * generator = new PartEllipsoid(0.7,0.7,0.7,1.0);
-    renderable = new GeneratorRender(generator);
+    Final gen;
+    renderable = new GeneratorRender(gen.generator);
     glfwSetErrorCallback(error_callback);
     if (!glfwInit())
         exit(2);

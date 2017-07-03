@@ -50,6 +50,17 @@ void Generator::scale(float sx, float sy, float sz)
     }
 }
 
+void Generator::shearX(float mag)
+{
+    glm::mat4 mat(1.0);
+    mat[1][0]=mag;
+    for (auto &point:points)
+    {
+        point.x = mat*point.x;
+    }
+}
+
+
 void Generator::getColor()
 {
     double x=1,y=1,z=1,a=1;

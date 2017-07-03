@@ -28,6 +28,7 @@ class Generator
     void scale(float x=1, float y=1, float z=1);
     void rotate(float x=1, float y=1, float z=1);
     void translate(float x=0, float y=0, float z=0);
+    void shearX(float mag);
     void modify();
     void getColor();
 };

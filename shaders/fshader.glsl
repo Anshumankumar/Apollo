@@ -20,5 +20,5 @@ void main ()
     }
     frag_color = 0.4*a*color+ 0.2*color + 1.0 *specular*vec4(1.0,1.0,1.0,1.0);
     frag_color.w = 1.0;
-//    frag_color = color;
+    frag_color = color;
 }

@@ -12,6 +12,7 @@
 #include <glm/vec3.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <generator.hpp>
+#include <letter.hpp>
 namespace apollo
 {
 class Renderable
