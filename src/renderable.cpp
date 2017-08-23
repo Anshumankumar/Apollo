@@ -52,8 +52,9 @@ void GeneratorRender::modifyPoints()
     points= generator->getPoints();
     for(auto &point:points)
     {
-        point.c.x=1*exp(-30*(point.x.y-mean)*(point.x.y-mean));
-        point.c.y=1*exp(-10*(point.x.x-mean2)*(point.x.x-mean2));
+       // point.c.x=1*exp(-2*(point.x.y-mean)*(point.x.y-mean));
+        point.c.x=0.0;
+        point.c.y=1*exp(-3*(point.x.x-mean2)*(point.x.x-mean2));
         point.c.z=1*exp(-5*(point.x.y-mean3)*(point.x.y-mean3));
     }
     glBufferData (GL_ARRAY_BUFFER,points.size()*sizeof(Point),
