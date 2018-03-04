@@ -6,9 +6,10 @@ find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
 pkg_search_module(GLFW REQUIRED glfw3)
 
-link_directories(/home/anshuman/Personal/machine_learning/arya/bin)
-include_directories(/home/anshuman/Personal/machine_learning/arya/bin)
-include_directories(/home/anshuman/Personal/machine_learning/arya/include)
+set(ARYA_PATH $ENV{ARYA_PATH})
+link_directories(${ARYA_PATH}/bin)
+include_directories(${ARYA_PATH}/bin)
+include_directories(${ARYA_PATH}/include)
 
 add_compile_options(-std=c++11)
 include_directories(${GLFW_INCLUDE_DIRS})

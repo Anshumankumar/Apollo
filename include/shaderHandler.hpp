@@ -28,6 +28,7 @@ class ShaderHandler
             stream.seekg(0,stream.beg);
             buffer = new char[len];
             stream.read(buffer,len);
+            buffer[len-1]='\0';
             stream.close();
         }
         else
