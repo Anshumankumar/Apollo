@@ -4,11 +4,8 @@
 #include <glm/vec3.hpp>
 #include <glm/vec2.hpp>
 
-namespace apollo
-{
-
-struct Point
-{
+namespace apollo {
+struct Point {
     glm::vec4 x;
     glm::vec4 c;
     glm::vec3 n; 
