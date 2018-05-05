@@ -188,12 +188,12 @@ Final::Final()
     A->translate(0.58);
     
     std::vector<Generator*> fullStack;
-    //fullStack.push_back(Y);
+    fullStack.push_back(Y);
     fullStack.push_back(O);
-    //fullStack.push_back(G);
-    //fullStack.push_back(I);
-    //fullStack.push_back(T);
-    //fullStack.push_back(A);
+    fullStack.push_back(G);
+    fullStack.push_back(I);
+    fullStack.push_back(T);
+    fullStack.push_back(A);
     generator = new Combiner(fullStack);
 }
 }

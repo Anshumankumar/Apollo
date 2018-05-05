@@ -1,5 +1,4 @@
 #version 130
-
 in vec4 vPosition;
 in vec4 vColor;
 in vec3 vNormal;
@@ -10,8 +9,7 @@ out vec4 color;
 out vec3 normal;
 out vec4 position;
 
-void main ()
-{
+void main () {
     gl_Position =transMat*vPosition;
     position=transMat*vPosition;
     color = vColor;
