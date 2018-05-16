@@ -1,8 +1,15 @@
 #include <generator.hpp>
 #include <iostream>
+#include <cmath>
+#include <cstdlib>
+#include <glm/gtx/normal.hpp>
+#include <glm/gtx/norm.hpp>
 
 namespace apollo
 {
+
+#define GOLDEN_RATIO  (1+ sqrt(5))/2
+
 void Generator::savePoints(std::string filename)
 {
     std::ofstream out(filename);
@@ -67,7 +74,6 @@ void Generator::getColor()
      if (params.getParam("c") != nullptr) 
     {
         Params p = params.get("c");
-        std::cout << "HELLO\n";
         if (p.getParam("x") != nullptr ) x=p.get<double>("x");
         if (p.getParam("y") != nullptr ) y=p.get<double>("y");
         if (p.getParam("z") != nullptr ) z=p.get<double>("z");
@@ -105,12 +111,6 @@ void Generator::modify()
     }
 }
 
-Point getPointFrustum(float radius, float theta, float angle, float zShift=0)
-{
-    Point point;
-    //point.c = color;    
-    point.x = glm::vec4(radius*cos(theta), radius*sin(theta),0,1); 
-}
 Point getPointEllipse( float a, float b, float c, float theta, float phi,glm::vec4 color, float zShift)
 {
     Point point;
@@ -171,7 +171,7 @@ Circle::Circle(float radius)
 Cube::Cube(float a)
 {
     std::vector<Point> vertices;
-    int X = 1 <<0 ;char  Y = 1 <<1; char Z = 1 << 2;
+    char X = 1 <<0 ;char  Y = 1 <<1; char Z = 1 << 2;
     float m,n,o;
     for (int i=0;i<8;i++)
     {
@@ -197,6 +197,83 @@ void Cube::addSquarePoint(int index, std::vector<Point>  vertices)
     }
     for (auto in:indexes) points.push_back(vertices[positive[in]]);
     for (auto in:indexes) points.push_back(vertices[negative[in]]);
+}
+
+Icosahedron::Icosahedron(float len){
+    std::vector<Point> vertices;
+    float A=0; float B=len/2 ; float C = GOLDEN_RATIO * len/2;
+    char X = 1 <<0; char  Y = 1 <<1; char Z = 1 << 2;
+    glm::vec4 clr(0.5,1.0,0.5,1);
+    
+    float m[3];
+    for (int i=0; i < 12; i++){
+        m[0]=A;
+        m[1] = B* ((i&X) ? -1 : 1) ;
+        m[2] = C* ((i&Y) ? -1 : 1);
+        int ri =  ((i >> 2) & 3);
+        glm::vec4 vec(m[(0 + ri)%3], m[(1 + ri)%3], m[(2 + ri)%3],1);
+        vertices.push_back({vec,clr});
+    }
+
+    std::vector<int[3]> indexes(20);
+    for (int i=0; i<12; i++){
+        indexes[i][0] = i;
+        indexes[i][1] = ((i&1) << 1)   + (((((i >> 2)&3) +1) % 3) << 2);
+        indexes[i][2] = indexes[i][1] +1 ;
+    }
+
+    for (int i=0;i < 8;  i++){
+        indexes[i+12][0] = ((i&6) >> 1);
+        indexes[i+12][1] = 4 +  (i&3);
+        indexes[i+12][2] = 8 + ((i&4)>>2) +   ((i&1) << 1);
+    }
+
+    for (int i=0;i<20;i++){
+        Point p[3];
+        for (int j=0; j <3; j++){ p[j] =  vertices[indexes[i][j]]; }
+        glm::vec3 normal=  glm::triangleNormal(glm::vec3(p[0].x), glm::vec3(p[1].x), glm::vec3(p[2].x));
+        normal  = (glm::dot(normal, glm::vec3(p[0].x)) > 0? 1.0f :-1.0f)* normal;
+        for (int j=0; j <3; j++){p[j].n = normal; points.push_back(p[j]);}
+    }
+
+}
+
+Point getPoint(glm::vec4 vec, float radius, glm::vec4 clr){
+    glm::vec4 v2 = radius*vec/float(sqrt(glm::dot(glm::vec3(vec), glm::vec3(vec))));
+    v2[3] =  1; 
+    return Point({v2,clr,glm::vec3(v2)}) ;
+}
+
+Sphere::Sphere(float radius){
+    //This generate Sphere from icosahedron
+    float slen = 2*radius/(sqrt(GOLDEN_RATIO*GOLDEN_RATIO+1));
+    Icosahedron ico(slen);
+    std::vector<Point> tmpPoints = ico.getPoints();
+    glm::vec4 clr(0.5,1.0,0.5,1);
+    for (int t=0; t<8; t++)
+    {
+        points = std::vector<Point>();
+        for (auto & point:tmpPoints){
+            point.n = glm::vec3(point.x);
+            point.c = clr;
+        }
+        glm::vec4 a,b;
+        Point m[3];
+        for (int i=0; i<tmpPoints.size()/3; i++){
+            for (int j=0; j < 3; j++){
+                a = tmpPoints[3*i + ((j+1)%3) ].x ;
+                b = tmpPoints[3*i + ((j+2)%3)].x; 
+                m[j] = getPoint((a+b)/2.0f,radius,clr);
+                points.push_back(m[j]);
+            }
+            for (int j=0; j<3; j++){
+                points.push_back(tmpPoints[3*i+ j]);
+                points.push_back(m[(j+1)%3]);
+                points.push_back(m[(j+2)%3]);
+            }
+        }
+        tmpPoints = points;
+    }
 }
 
 
@@ -243,4 +320,6 @@ Combiner::Combiner(std::vector<Generator*> generators)
         }
     }
 }
+
+
 }

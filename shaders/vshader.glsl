@@ -1,4 +1,4 @@
-#version 130
+#version 310 es
 in vec4 vPosition;
 in vec4 vColor;
 in vec3 vNormal;

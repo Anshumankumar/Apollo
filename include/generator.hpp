@@ -54,6 +54,18 @@ class Cube:public Generator
     void addSquarePoint(int index, std::vector <Point> vertices);
 };
 
+class Icosahedron:public Generator{
+    public:
+    Icosahedron(float len);
+};
+
+class Sphere:public Generator
+{
+    public:
+    Sphere(float radius);
+    
+};
+
 class Frustum:public Generator
 {
     public:

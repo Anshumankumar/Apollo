@@ -22,6 +22,7 @@ void Renderable::render()
 
     modifyPoints();
     glUniformMatrix4fv(matLocation, 1, GL_FALSE, &tmat[0][0]);
+    //GLuint drawType = GL_LINES;
     GLuint drawType = GL_TRIANGLES;
     glDrawArrays(drawType, 0, points.size());
 
@@ -49,24 +50,24 @@ void GeneratorRender::modifyPoints()
     float mean = 0.2*sin(scale);
     float mean2 = 0.6*sin(1.7*scale);
     float mean3 = 0.2*sin(2.7*scale);
-    points= generator->getPoints();
-    for(auto &point:points)
+    //points= generator->getPoints();
+    /*for(auto &point:points)
     {
        // point.c.x=1*exp(-2*(point.x.y-mean)*(point.x.y-mean));
         point.c.x=1*exp(-1*(point.x.x-mean2)*(point.x.x-mean2));
         point.c.y=1*exp(-3*(point.x.x-mean2)*(point.x.x-mean2));
         point.c.z=1*exp(-5*(point.x.y-mean3)*(point.x.y-mean3));
-    }
-    glBufferData (GL_ARRAY_BUFFER,points.size()*sizeof(Point),
+    }*/
+    /* glBufferData (GL_ARRAY_BUFFER,points.size()*sizeof(Point),
             &points[0], GL_STATIC_DRAW);
- 
+    */
 
     tmat=glm::mat4(1.0);    
    // tmat=glm::scale(tmat,glm::vec3(1.0,1.0,1.0));
     glm::mat4 identity(1.0);
-    glm::mat4 rot=glm::rotate(identity,scale,glm::vec3(0.0,1.0,0.0));
+    glm::mat4 rot=glm::rotate(identity,scale,glm::vec3(sin(scale),0.0,0.0));
     glm::mat4 trans = glm::translate(identity,glm::vec3(-0.35,-0.35,-0.35));
-    tmat = glm::translate(identity,glm::vec3(0.0,0.5*sin(scale),0.0));
+    tmat = glm::translate(rot,glm::vec3(0.0,0.5*sin(scale),0.0));
    // tmat = rot;
 
 //    tmat=glm::mat4(1.0);    

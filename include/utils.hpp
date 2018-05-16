@@ -1,5 +1,6 @@
 #ifndef UTILS_HPP
 #define UTILS_HPP
+
 #include <glm/vec4.hpp>
 #include <glm/vec3.hpp>
 #include <glm/vec2.hpp>
