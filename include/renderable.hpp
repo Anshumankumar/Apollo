@@ -20,8 +20,10 @@ class Renderable
     protected:
     std::vector<Point> points;
     GLuint vao,vbo,program;
+    GLuint tbo;
     float scale =0;
     public:
+    float sc = 1.0;
     glm::mat4 tmat;
     void initialize(GLuint program);
     virtual void setPoints()=0;

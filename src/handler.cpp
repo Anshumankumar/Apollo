@@ -1,4 +1,5 @@
 #include <handler.hpp>
+#include <image/jpeg_loader.hpp>
 
 using namespace apollo;
 static void error_callback(int error, const char* description)
@@ -6,9 +7,16 @@ static void error_callback(int error, const char* description)
     fprintf(stderr, "Error: %s\n", description);
 }
 
-void ApolloHandler::keyCalls(){
-
+void ApolloHandler::keyCalls(int key, int action){
+     
      std::cout << "Got the callBack\n";
+        if (key == GLFW_KEY_UP && (action == GLFW_PRESS || action == GLFW_REPEAT)){
+        renderable->sc += 0.01;
+     }
+     if (key == GLFW_KEY_DOWN && (action == GLFW_PRESS || action == GLFW_REPEAT)){
+        renderable->sc -= 0.01;
+     }
+
 }
 void ApolloHandler::setUpGl()
 {
@@ -22,7 +30,7 @@ void ApolloHandler::setUpGl()
 void ApolloHandler::keyCallBack(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
      auto handler = (ApolloHandler*)(glfwGetWindowUserPointer(window));
-     handler->keyCalls();
+     handler->keyCalls(key, action);
 }
 
 ApolloHandler::ApolloHandler()
@@ -40,9 +48,9 @@ ApolloHandler::ApolloHandler()
     sphere2->scale(0.5,0.5,0.5);
     sphere2->translate(-0.5);
 
-    frustum->scale(1.0,1.0,1.0);
+    frustum->scale(0.3,0.3,0.3);
     frustum->rotate(-M_PI/2,0.0,0.0);
-    frustum->translate(0.0,-0.2,0.0);
+    frustum->translate(0.5, 0.0,0.0);
     cube->translate(-0.35,-0.35,-0.35);
 //    sphere->translate(0.0,-0.50,0);
     cube->scale(1,1,1);
@@ -54,11 +62,14 @@ ApolloHandler::ApolloHandler()
     //generators.push_back(sphere2);
     //generators.push_back(new Icosahedron(0.3));
     generators.push_back(new Sphere(0.5));
+    //generators.push_back(frustum);
     Generator * generator = new Combiner(generators);
-//    renderable = new FileRender("../models/test.raw");
+    //renderable = new FileRender("../models/triangle.raw");
    // renderable = new Triangle();
    // Generator * generator = new PartEllipsoid(0.7,0.7,0.7,1.0);
     //Final gen;
+    ImageLoader::Image image = JpegLoader("../images/second.jpg").load();
+    std::cout << image.width << " " << image.height << " " << image.channels << "\n";
     renderable = new GeneratorRender(generator);
     glfwSetErrorCallback(error_callback);
     if (!glfwInit())
@@ -73,7 +84,6 @@ ApolloHandler::ApolloHandler()
     glfwSwapInterval(1);
     glfwSetWindowUserPointer(window, this);
     glfwSetKeyCallback(window, ApolloHandler::keyCallBack);
-
     GLenum err=glewInit();
     if(err!=GLEW_OK)
     {
@@ -110,6 +120,11 @@ ApolloHandler::ApolloHandler()
     glEnableVertexAttribArray(vtex_location);
     glEnableVertexAttribArray(vcol_location);
     glUseProgram(program);
+
+    glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB, image.width, image.height, 0, GL_BGR, GL_UNSIGNED_BYTE, image.data);
+    
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 }
 
 void ApolloHandler::run()

@@ -159,6 +159,7 @@ Circle::Circle(float radius)
     int k = 0;
     float theta;
     float theta1;
+    color = glm::vec4(0.0,1.0,0.0,1.0);
     for (int i = 0; i < 180; i++)
     {
         theta = i*2*M_PI/180;
@@ -240,8 +241,10 @@ Icosahedron::Icosahedron(float len){
 
 Point getPoint(glm::vec4 vec, float radius, glm::vec4 clr){
     glm::vec4 v2 = radius*vec/float(sqrt(glm::dot(glm::vec3(vec), glm::vec3(vec))));
-    v2[3] =  1; 
-    return Point({v2,clr,glm::vec3(v2)}) ;
+    v2[3] =  1;
+    glm::vec3 rd(rand()*0.1/RAND_MAX, rand()*0.1/RAND_MAX, rand()*0.1/RAND_MAX);
+    glm::vec4 rd2(rand()*0.1/RAND_MAX, rand()*0.1/RAND_MAX, rand()*0.1/RAND_MAX,1);
+    return Point({v2,clr +rd2,glm::vec3(v2 )+ rd}) ;
 }
 
 Sphere::Sphere(float radius){
@@ -249,13 +252,16 @@ Sphere::Sphere(float radius){
     float slen = 2*radius/(sqrt(GOLDEN_RATIO*GOLDEN_RATIO+1));
     Icosahedron ico(slen);
     std::vector<Point> tmpPoints = ico.getPoints();
-    glm::vec4 clr(0.5,1.0,0.5,1);
-    for (int t=0; t<8; t++)
+    glm::vec4 clr(1.0,1.0,1.0,1);
+
+    for (int t=0; t<6; t++)
     {
         points = std::vector<Point>();
         for (auto & point:tmpPoints){
-            point.n = glm::vec3(point.x);
-            point.c = clr;
+            glm::vec3 rd(rand()*0.1/RAND_MAX, rand()*0.1/RAND_MAX, rand()*0.1/RAND_MAX);
+            glm::vec4 rd2(rand()*0.1/RAND_MAX, rand()*0.1/RAND_MAX, rand()*0.1/RAND_MAX,1);
+            point.n = glm::vec3(point.x) + rd;
+            point.c = clr + rd2;
         }
         glm::vec4 a,b;
         Point m[3];
@@ -274,6 +280,16 @@ Sphere::Sphere(float radius){
         }
         tmpPoints = points;
     }
+
+    //UV Mapping
+    for (auto &point:points){
+        float theta = atan2(point.x.z,point.x.x);
+        float u =  theta<0?-theta/M_PI : 1-theta/M_PI;
+        float v  = 0.5 + (point.x.y/ glm::length(glm::vec3(point.x)))/M_PI;
+        point.t = glm::vec2(u,v);
+    }
+
+
 }
 
 
@@ -281,6 +297,7 @@ Frustum::Frustum(float rTop, float rBot, float height)
 {
     Circle topCircle(rTop);
     Circle bottomCircle(rBot);
+    color = glm::vec4(1.0,1.0,0.0,1.0);
     for(int i=0;i<180;i++)
     {
         float theta1 = i*2*M_PI/180;

@@ -6,12 +6,14 @@
 using namespace apollo;
 void Renderable::initialize(GLuint program)
 {
-    vao=0;vbo=0;
     glGenVertexArrays (1, &vao);
     glBindVertexArray (vao);
     glGenBuffers (1, &vbo);
     glBindBuffer (GL_ARRAY_BUFFER, vbo);
     this->program = program;
+    
+    glGenTextures(1, &tbo);
+    glBindTexture(GL_TEXTURE_2D, tbo);
     tmat = glm::mat4(1.0f);
 }
 
@@ -65,9 +67,9 @@ void GeneratorRender::modifyPoints()
     tmat=glm::mat4(1.0);    
    // tmat=glm::scale(tmat,glm::vec3(1.0,1.0,1.0));
     glm::mat4 identity(1.0);
-    glm::mat4 rot=glm::rotate(identity,scale,glm::vec3(sin(scale),0.0,0.0));
-    glm::mat4 trans = glm::translate(identity,glm::vec3(-0.35,-0.35,-0.35));
-    tmat = glm::translate(rot,glm::vec3(0.0,0.5*sin(scale),0.0));
+    tmat = glm::translate(identity,glm::vec3(0.0,-0.5*cos( scale),0.0));
+    tmat = glm::rotate(tmat,scale,glm::vec3(sin(scale),0.0,0.0));
+    tmat = glm::scale(tmat,glm::vec3(sc,sc,sc));
    // tmat = rot;
 
 //    tmat=glm::mat4(1.0);    
@@ -106,4 +108,7 @@ void FileRender::setPoints()
         points.push_back(point);
     }
     std::cout << points.size() << "\n";
+    glBufferData (GL_ARRAY_BUFFER,points.size()*sizeof(Point),
+            &points[0], GL_STATIC_DRAW);
+ 
 }

@@ -3,7 +3,9 @@ precision mediump float;
 in vec4 color;
 in  vec3 normal;
 in vec4 position;
+in vec2 uv;
 
+uniform sampler2D myTextureSampler;
 vec3 light = vec3(1.0,1.0,-1.0);
 vec3 eye = vec3(0.0,0.0,-1.0);
 
@@ -22,6 +24,8 @@ void main ()
     {
         specular = 0.0;
     }
-    frag_color = 0.4*a*color+ 0.2*color + 1.0 *specular*vec4(1.0,1.0,1.0,1.0);
+    frag_color = 0.4*a*color+ 0.2*color + 0.8 *specular*vec4(1.0,1.0,1.0,1.0);
     frag_color.w = 1.0;
+    frag_color =  vec4(texture(myTextureSampler, uv).rgb,1.0);
+//    frag_color = vec4(uv.xy,0.0,1.0);
 }

@@ -9,7 +9,7 @@ namespace apollo
 class ApolloHandler
 {
     GLuint program;
-    void keyCalls();
+    void keyCalls(int, int);
     public:
     ApolloHandler();
     GLFWwindow *window;

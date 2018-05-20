@@ -1,2 +1,4 @@
 bin
 models
+*.swp
+images
