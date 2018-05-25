@@ -62,7 +62,7 @@ class Icosahedron:public Generator{
 class Sphere:public Generator
 {
     public:
-    Sphere(float radius);
+    Sphere(float,int iterCount=3 );
     
 };
 

@@ -1,5 +1,6 @@
 #include <handler.hpp>
 #include <image/jpeg_loader.hpp>
+#include <texture/perlin_noise.hpp>
 
 using namespace apollo;
 static void error_callback(int error, const char* description)
@@ -26,6 +27,7 @@ void ApolloHandler::setUpGl()
     glClearDepth(1.0);
     glDepthFunc(GL_LESS);
     glEnable(GL_DEPTH_TEST);
+    glEnable( GL_MULTISAMPLE );
 }
 void ApolloHandler::keyCallBack(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
@@ -61,14 +63,15 @@ ApolloHandler::ApolloHandler()
     //generators.push_back(sphere1);
     //generators.push_back(sphere2);
     //generators.push_back(new Icosahedron(0.3));
-    generators.push_back(new Sphere(0.5));
+    generators.push_back(new Sphere(0.5,3));
     //generators.push_back(frustum);
     Generator * generator = new Combiner(generators);
     //renderable = new FileRender("../models/triangle.raw");
    // renderable = new Triangle();
    // Generator * generator = new PartEllipsoid(0.7,0.7,0.7,1.0);
     //Final gen;
-    ImageLoader::Image image = JpegLoader("../images/second.jpg").load();
+    //Image image = JpegLoader("../images/second.jpg").load();
+    Image image = PerlinNoise("").load();
     std::cout << image.width << " " << image.height << " " << image.channels << "\n";
     renderable = new GeneratorRender(generator);
     glfwSetErrorCallback(error_callback);
@@ -103,6 +106,7 @@ ApolloHandler::ApolloHandler()
     GLint vcol_location = glGetAttribLocation(program, "vColor");
     GLint vnor_location = glGetAttribLocation(program, "vNormal");
     GLint vtex_location = glGetAttribLocation(program, "vTex");
+    GLint rVec_location = glGetAttribLocation(program, "rVec");
 
 
 
@@ -115,16 +119,19 @@ ApolloHandler::ApolloHandler()
     glVertexAttribPointer(vtex_location, 2, GL_FLOAT, GL_FALSE,
             sizeof(Point), (void*) (sizeof(float) * 11));
 
+    glVertexAttribPointer(rVec_location, 3, GL_FLOAT, GL_FALSE,
+            sizeof(Point), (void*) (sizeof(float) * 13));
     glEnableVertexAttribArray(vnor_location);
     glEnableVertexAttribArray(vpos_location);
     glEnableVertexAttribArray(vtex_location);
     glEnableVertexAttribArray(vcol_location);
+    glEnableVertexAttribArray(rVec_location);
     glUseProgram(program);
 
-    glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB, image.width, image.height, 0, GL_BGR, GL_UNSIGNED_BYTE, image.data);
+    glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB, image.width, image.height, 0, GL_RGB, GL_UNSIGNED_BYTE, image.data);
     
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 }
 
 void ApolloHandler::run()

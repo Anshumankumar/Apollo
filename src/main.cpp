@@ -1,5 +1,4 @@
 #include <handler.hpp>
-#include <texture/perlinNoise.hpp>
 
 int main()
 {

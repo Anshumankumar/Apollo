@@ -12,11 +12,14 @@ vec3 eye = vec3(0.0,0.0,-1.0);
 out vec4 frag_color;
 void main ()
 {
-    float a = max(0.0,dot(normal,normalize(vec3(light-vec3(position)))));
+    vec3 normal2 =   0.5*vec3(texture(myTextureSampler, uv).rrr);
+    vec3 normal3 =  normal + 0.1*vec3(texture(myTextureSampler, uv).bgr);
+    vec4 color2 =  vec4(texture(myTextureSampler, uv).rgb,1.0);
+    float a = max(0.0,dot(normal2,normalize(vec3(light-vec3(position)))));
     float specular = 1.0;
     if ((a>0.0))
     {
-        vec3 reflect = reflect(normalize(vec3(position)-light),normalize(normal));
+        vec3 reflect = reflect(normalize(vec3(position)-light),normalize(normal3));
         vec3 eyeLocal = normalize(eye-vec3(position));
         specular = pow(max(0.0,dot(reflect,eyeLocal)),30.0);
     }
@@ -24,8 +27,7 @@ void main ()
     {
         specular = 0.0;
     }
-    frag_color = 0.4*a*color+ 0.2*color + 0.8 *specular*vec4(1.0,1.0,1.0,1.0);
+    //frag_color = 2.0*a*color2; //+ 0.8*color2 ;//+ 0.4 *specular*vec4(1.0,1.0,1.0,1.0);
+    frag_color = color2 ;
     frag_color.w = 1.0;
-    frag_color =  vec4(texture(myTextureSampler, uv).rgb,1.0);
-//    frag_color = vec4(uv.xy,0.0,1.0);
 }

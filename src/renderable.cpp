@@ -67,8 +67,8 @@ void GeneratorRender::modifyPoints()
     tmat=glm::mat4(1.0);    
    // tmat=glm::scale(tmat,glm::vec3(1.0,1.0,1.0));
     glm::mat4 identity(1.0);
-    tmat = glm::translate(identity,glm::vec3(0.0,-0.5*cos( scale),0.0));
-    tmat = glm::rotate(tmat,scale,glm::vec3(sin(scale),0.0,0.0));
+    //tmat = glm::translate(identity,glm::vec3(0.0,-0.5*cos( scale),0.0));
+    tmat = glm::rotate(tmat,scale,glm::vec3(scale*2.0,scale,0.0));
     tmat = glm::scale(tmat,glm::vec3(sc,sc,sc));
    // tmat = rot;
 

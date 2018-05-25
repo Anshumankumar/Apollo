@@ -1,7 +1,8 @@
 #include <image/jpeg_loader.hpp>
 #include <iostream>
 
-ImageLoader::Image  JpegLoader::load(){
+namespace apollo{
+Image  JpegLoader::load(){
     std::cout << "LOADING IMAGES " <<  this-> filename << "\n";
     FILE *infile =  fopen(filename.c_str(),"rb");
     ErrorManager errorManager;
@@ -59,4 +60,4 @@ void JpegLoader::message(j_common_ptr cinfo)
     (*cinfo->err->format_message) (cinfo, buffer);
     std::cerr << buffer << std::endl;
 }
-
+}

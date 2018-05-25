@@ -11,6 +11,7 @@ struct Point {
     glm::vec4 c;
     glm::vec3 n; 
     glm::vec2 t;
+    glm::vec3 rn;
 };
 }
 #endif 

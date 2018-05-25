@@ -5,6 +5,7 @@
 #include <jpeglib.h>
 #include <setjmp.h>
 
+namespace apollo{
 class JpegLoader:public ImageLoader{
     private:
     struct ErrorManager
@@ -18,5 +19,6 @@ class JpegLoader:public ImageLoader{
     using ImageLoader::ImageLoader;
     Image load();
 };
+}
 
 #endif

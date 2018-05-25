@@ -4,7 +4,8 @@
 #include <cstdlib>
 #include <glm/gtx/normal.hpp>
 #include <glm/gtx/norm.hpp>
-
+#include <glm/gtx/rotate_vector.hpp> 
+#include <ctime>
 namespace apollo
 {
 
@@ -200,6 +201,26 @@ void Cube::addSquarePoint(int index, std::vector<Point>  vertices)
     for (auto in:indexes) points.push_back(vertices[negative[in]]);
 }
 
+glm::vec3 getRandomNormal(glm::vec4 vec){
+    //Generate vector in plane
+    float alpha = (2.0f*M_PI*rand())/RAND_MAX;
+    glm::vec3 v(cos(alpha), sin(alpha),0.0);
+    float len =  glm::length(glm::vec2(vec.y,vec.z));
+    if (len == 0){
+        return glm::vec3(v.x, 0,v.y);    
+    }
+    if (vec.z != 0.0) {
+        len = abs(vec.z)*len/vec.z;
+    }
+
+    float theta = atan2(vec.x, len);
+    float phi = asin(vec.y/len);
+    glm::vec3 v2 =  glm::rotateY(v,  theta);
+    v2 =  glm::rotateX(v2,  -phi);
+    return v2;
+}
+
+
 Icosahedron::Icosahedron(float len){
     std::vector<Point> vertices;
     float A=0; float B=len/2 ; float C = GOLDEN_RATIO * len/2;
@@ -213,7 +234,9 @@ Icosahedron::Icosahedron(float len){
         m[2] = C* ((i&Y) ? -1 : 1);
         int ri =  ((i >> 2) & 3);
         glm::vec4 vec(m[(0 + ri)%3], m[(1 + ri)%3], m[(2 + ri)%3],1);
-        vertices.push_back({vec,clr});
+        Point  p({vec,clr});
+        p.rn =  getRandomNormal(p.x);
+        vertices.push_back(p);
     }
 
     std::vector<int[3]> indexes(20);
@@ -232,9 +255,14 @@ Icosahedron::Icosahedron(float len){
     for (int i=0;i<20;i++){
         Point p[3];
         for (int j=0; j <3; j++){ p[j] =  vertices[indexes[i][j]]; }
-        glm::vec3 normal=  glm::triangleNormal(glm::vec3(p[0].x), glm::vec3(p[1].x), glm::vec3(p[2].x));
-        normal  = (glm::dot(normal, glm::vec3(p[0].x)) > 0? 1.0f :-1.0f)* normal;
-        for (int j=0; j <3; j++){p[j].n = normal; points.push_back(p[j]);}
+        glm::vec3 normal2=  glm::triangleNormal(glm::vec3(p[0].x), glm::vec3(p[1].x), glm::vec3(p[2].x));
+        glm::vec3 normal  = (glm::dot(normal2, glm::vec3(p[0].x)) > 0? 1.0f :-1.0f)* normal2;
+        if (glm::dot(normal2, glm::vec3(p[0].x)) > 0){ 
+            for (int j=0; j <3; j++){p[j].n = normal; points.push_back(p[j]);}
+        }
+        else {
+            for (int j=2; j >=0; j--){p[j].n = normal; points.push_back(p[j]);}
+        }
     }
 
 }
@@ -242,26 +270,32 @@ Icosahedron::Icosahedron(float len){
 Point getPoint(glm::vec4 vec, float radius, glm::vec4 clr){
     glm::vec4 v2 = radius*vec/float(sqrt(glm::dot(glm::vec3(vec), glm::vec3(vec))));
     v2[3] =  1;
-    glm::vec3 rd(rand()*0.1/RAND_MAX, rand()*0.1/RAND_MAX, rand()*0.1/RAND_MAX);
-    glm::vec4 rd2(rand()*0.1/RAND_MAX, rand()*0.1/RAND_MAX, rand()*0.1/RAND_MAX,1);
-    return Point({v2,clr +rd2,glm::vec3(v2 )+ rd}) ;
+    Point p({v2,clr ,glm::vec3(v2 )}) ;
+    p.rn  = getRandomNormal(p.x);
+    return p;
 }
 
-Sphere::Sphere(float radius){
+glm::vec2 getTex(Point point, float radius){
+    float theta = atan2(point.x.z,point.x.x);
+    float u =  0.5 + theta/(2*M_PI);
+    float v  = 0.5 - asin(point.x.y/radius)/M_PI;
+    return glm::vec2(u,v);
+}
+
+Sphere::Sphere(float radius, int iterCount){
+    srand(time(NULL));
     //This generate Sphere from icosahedron
     float slen = 2*radius/(sqrt(GOLDEN_RATIO*GOLDEN_RATIO+1));
     Icosahedron ico(slen);
     std::vector<Point> tmpPoints = ico.getPoints();
-    glm::vec4 clr(1.0,1.0,1.0,1);
+    glm::vec4 clr(0.0,1.0,1.0,1);
 
-    for (int t=0; t<6; t++)
+    for (int t=0; t<iterCount; t++)
     {
         points = std::vector<Point>();
         for (auto & point:tmpPoints){
-            glm::vec3 rd(rand()*0.1/RAND_MAX, rand()*0.1/RAND_MAX, rand()*0.1/RAND_MAX);
-            glm::vec4 rd2(rand()*0.1/RAND_MAX, rand()*0.1/RAND_MAX, rand()*0.1/RAND_MAX,1);
-            point.n = glm::vec3(point.x) + rd;
-            point.c = clr + rd2;
+            point.n = glm::vec3(point.x) ;
+            point.c = clr ;
         }
         glm::vec4 a,b;
         Point m[3];
@@ -280,14 +314,40 @@ Sphere::Sphere(float radius){
         }
         tmpPoints = points;
     }
+    points = tmpPoints;
+
+    for (int i=0; i < points.size()/3;i++){
+        glm::vec3 normal=  glm::triangleNormal(glm::vec3(points[3*i].x), glm::vec3(points[3*i+1].x), glm::vec3(points[3*i+2].x));
+        if (glm::dot(normal, glm::vec3(points[3*i].x)) < 0){
+            Point p = points[3*i];
+            points[3*i] =  points[3*i+1];
+            points[3*i+1] = p;
+        }
+
+    }
+
+
+
 
     //UV Mapping
-    for (auto &point:points){
-        float theta = atan2(point.x.z,point.x.x);
-        float u =  theta<0?-theta/M_PI : 1-theta/M_PI;
-        float v  = 0.5 + (point.x.y/ glm::length(glm::vec3(point.x)))/M_PI;
-        point.t = glm::vec2(u,v);
+    for (int i=0;i<points.size()/3;i++){
+        glm::vec2 t[3];
+        t[0] = getTex(points[3*i],radius);
+        t[1] = getTex(points[3*i+1],radius);
+        t[2] = getTex(points[3*i+2],radius);
+        float mx = std::max(std::max(t[0].x, t[1].x), t[2].x);
+        float mn = std::min(std::min(t[0].x, t[1].x),t[2].x);
+        for (int j=0;j<3;j++){
+            if (mx-mn > 0.5){
+                if (t[j].x <= 0.5){
+                    t[j].x = 1.0 +  t[j].x;
+                }
+            }
+            t[j].x = (1/1.5)*t[j].x;
+            points[3*i+j].t  = t[j]; 
+        }
     }
+
 
 
 }
